@@ -1,10 +1,16 @@
 package kr.co.ltdb.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -122,9 +128,6 @@ public class MemberController {
 	@PostMapping("/members/login")
 	public ResponseEntity<List<Member>> findByNameAndPw(String name, String pw) {
 		try {
-			System.out.println(name);
-			System.out.println(pw);
-			
 			List<Member> members = memberRepository.findByNameAndPw(name, pw);
 			
 			if (members.isEmpty()) {
@@ -135,4 +138,101 @@ public class MemberController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}	
+	
+	/*
+	@GetMapping(value = "/pako")
+	public ResponseEntity<String> getApiPako() throws IOException {
+		
+		ClassPathResource resource = new ClassPathResource("static/pako.js");
+
+		try {
+		    Path path = Paths.get(resource.getURI());
+		    List<String> content = Files.readAllLines(path);
+		    
+//		    StringBuffer sb = new StringBuffer();
+		    String writeScript = "";
+		    
+		    for(int i=0; i<content.size(); i++) {
+		    	if(i != 0) {
+		    		writeScript += "\n";
+		    	}
+		    	writeScript += content.get(i);
+			}
+		    
+//	        for (String readLine : content) {
+//	            sb.append(readLine);
+//	        }
+		    
+		    return ResponseEntity.ok()
+		    			.header(HttpHeaders.ACCEPT_RANGES, "bytes")
+		    			.header(HttpHeaders.CONNECTION, "Keep-Alive")
+		    			.header(HttpHeaders.CONTENT_ENCODING, "")
+		    			.header(HttpHeaders.CONTENT_TYPE, "application/javascript") //charset=UTF-8
+		    			.body(writeScript);
+		} catch (IOException e) {
+		    //log.error("{}", e.getMessage(), e);
+		}
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@GetMapping(value = "/mercator")
+	public ResponseEntity<String> getApiMercator() throws IOException {
+		
+		ClassPathResource resource = new ClassPathResource("static/global-mercator.js");
+
+		try {
+		    Path path = Paths.get(resource.getURI());
+		    List<String> content = Files.readAllLines(path);
+		    
+		    String writeScript = "";
+		    
+		    for(int i=0; i<content.size(); i++) {
+		    	if(i != 0) {
+		    		writeScript += "\n";
+		    	}
+		    	writeScript += content.get(i);
+			}
+		    
+		    return ResponseEntity.ok()
+		    			.header(HttpHeaders.ACCEPT_RANGES, "bytes")
+		    			.header(HttpHeaders.CONNECTION, "Keep-Alive")
+		    			.header(HttpHeaders.CONTENT_ENCODING, "")
+		    			.header(HttpHeaders.CONTENT_TYPE, "application/javascript") //"text/javascript" //application/javascript
+		    			.body(writeScript);
+		} catch (IOException e) {
+		    //log.error("{}", e.getMessage(), e);
+		}
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}	
+
+	@GetMapping(value = "/vectorUtils")
+	public ResponseEntity<String> getApiVectorUtils() throws IOException {
+		
+		ClassPathResource resource = new ClassPathResource("static/vectortile-utils.js");
+
+		try {
+		    Path path = Paths.get(resource.getURI());
+		    List<String> content = Files.readAllLines(path);
+		    
+		    String writeScript = "";
+		    
+		    for(int i=0; i<content.size(); i++) {
+		    	if(i != 0) {
+		    		writeScript += "\n";
+		    	}
+		    	writeScript += content.get(i);
+			}
+		    
+		    return ResponseEntity.ok()
+		    			.header(HttpHeaders.ACCEPT_RANGES, "bytes")
+		    			.header(HttpHeaders.CONNECTION, "Keep-Alive")
+		    			.header(HttpHeaders.CONTENT_ENCODING, "")
+		    			.header(HttpHeaders.CONTENT_TYPE, "application/javascript")
+		    			.body(writeScript);
+		} catch (IOException e) {
+		    //log.error("{}", e.getMessage(), e);
+		}
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}		
+	*/
 }

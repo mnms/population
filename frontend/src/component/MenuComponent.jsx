@@ -66,7 +66,7 @@ function MenuComponent(props) {
                             .password(config.password)
                             .connectAsync()
                             .then(function (connector) {
-                                return connector.queryAsync("SELECT min(event_time), max(event_time) FROM ltdb_fp limit 1", {columnarResults: false});
+                                return connector.queryAsync("select max(event_time) from ltdb_fp_history where table_name='ltdb_fp' limit 1", {columnarResults: false});
                             }).then(function (result) {
                                 if(result.length > 0) {
                                     const currentDate = dateParse(result[0]['max(event_time)']);

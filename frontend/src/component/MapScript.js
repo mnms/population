@@ -15,6 +15,7 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import {CircleMode, DirectMode, DragCircleMode, SimpleSelectMode,} from "mapbox-gl-draw-circle";
 import { useEffect, useRef } from 'react';
 import {GlobalMercator} from '../js/global-mercator.js'
+
 import {setChartOnDraw, getCurrentDate, calculateSumAndMax, calculateSumAndMax2, getCalculateMax} from '../service/CustomFunc.js'
 
 import { updatePrevHour, updateDateString } from "../redux/actions"
@@ -682,9 +683,10 @@ const MapScript = () => {
         });
 
         window.beforeMap.on('load', function() {
+
             window.beforeMap.style.dispatcher.broadcast('loadWorkerSource', {
                 name: "pako",
-                url: "http://fbg01:8077/js/pako.js"
+                url: `http://${window.location.host}/static/js/pako.js` //`http://${window.location.host}/api/pako` //"http://fbg01:8077/js/pako.js"//`http:localhost:${config.appPort}/static/pako.js` //`${axios.get('/api/pako')}`
             }, function (e) {
                 if (e) {
                     console.log(e);
@@ -693,7 +695,7 @@ const MapScript = () => {
 
             window.beforeMap.style.dispatcher.broadcast('loadWorkerSource', {
                 name: "global-mercator",
-                url: "http://fbg01:8077/js/global-mercator.js"
+                url: `http://${window.location.host}/static/js/global-mercator.js`
             }, function (e) {
                 if (e) {
                     console.log(e);
@@ -711,7 +713,7 @@ const MapScript = () => {
 
             window.beforeMap.style.dispatcher.broadcast('loadWorkerSource', {
                 name: "vectortile-utils",
-                url: "http://fbg01:8077/js/vectortile-utils.js"
+                url: `http://${window.location.host}/static/js/vectortile-utils.js` //`${axios.get('/api/vectorUtils')}`
             }, function (e) {
                 if (e) {
                     console.log(e);
@@ -743,7 +745,7 @@ const MapScript = () => {
         window.afterMap.on('load', function() {
             window.afterMap.style.dispatcher.broadcast('loadWorkerSource', {
                 name: "pako",
-                url: "http://fbg01:8077/js/pako.js"
+                url: `http://${window.location.host}/static/js/pako.js` //`${axios.get('/api/pako')}`
             }, function (e) {
                 if (e) {
                     console.log(e);
@@ -752,7 +754,7 @@ const MapScript = () => {
 
             window.afterMap.style.dispatcher.broadcast('loadWorkerSource', {
                 name: "global-mercator",
-                url: "http://fbg01:8077/js/global-mercator.js"
+                url: `http://${window.location.host}/static/js/global-mercator.js` //`${axios.get('/api/mercator')}`
             }, function (e) {
                 if (e) {
                     console.log(e);
@@ -770,7 +772,7 @@ const MapScript = () => {
 
             window.afterMap.style.dispatcher.broadcast('loadWorkerSource', {
                 name: "vectortile-utils",
-                url: "http://fbg01:8077/js/vectortile-utils.js"
+                url: `http://${window.location.host}/static/js/vectortile-utils.js` //`${axios.get('/api/vectorUtils')}`
             }, function (e) {
                 if (e) {
                     console.log(e);
