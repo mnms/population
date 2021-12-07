@@ -54,8 +54,8 @@
     "registry": "http://repo.stlogic.co.kr/repository/npm-internal/"
   },
   "scripts": {
-    "start": "cp external/mapbox-gl-compare.js node_modules/mapbox-gl-compare/dist/ && react-scripts start",
-    "build": "cp external/mapbox-gl-compare.js node_modules/mapbox-gl-compare/dist/ && react-scripts build && cp external/* build/static/js/",
+    "start": "cp node_external/* node_modules/mapbox-gl-compare/ && cp node_external/* node_modules/mapbox-gl-compare/dist/ && react-scripts start",
+    "build": "cp node_external/* node_modules/mapbox-gl-compare/ && cp node_external/* node_modules/mapbox-gl-compare/dist/ && react-scripts build && cp external/* build/static/js/",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
