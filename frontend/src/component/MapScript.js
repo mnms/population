@@ -95,9 +95,13 @@ const MapScript = () => {
             window.afterMap.removeSource('vector-tile2');
             updateAfterMap(max, weight, window.store.getState().dateString, 0.5);
         } else if( e.target.value == '02:00:00') {
-            //updateAfterMap(weight, "event_time = '202103150800'", 0);
+            window.afterMap.removeLayer('vector-tile2');
+            window.afterMap.removeSource('vector-tile2');
+            updateAfterMap(max, weight, window.store.getState().dateString, 0.5);
         } else {
-            //updateAfterMap(weight, "event_time = '202103150700'", 0);
+            window.afterMap.removeLayer('vector-tile2');
+            window.afterMap.removeSource('vector-tile2');
+            updateAfterMap(max, weight, window.store.getState().dateString, 0.5);
         }
 
     };    
@@ -124,7 +128,7 @@ const MapScript = () => {
                     var bbox = ${JSON.stringify(bbox)};
                     return renderSqlDiffPost(host, port, tile, sql1, sql2, typeName, aggrType, multiple, null);
                 }`,
-            minzoom: 10,
+            minzoom: 0,
             maxzoom: 16.1
         });
         
@@ -135,7 +139,7 @@ const MapScript = () => {
             'source': 'vector-tile2',
             'source-layer': 'ltdb_fp',
             'maxzoom': 16.1,
-            'minzoom': 10,
+            'minzoom': 0,
             'paint': {
             // Increase the heatmap weight based on frequency and property magnitude
             'heatmap-weight': weight,
@@ -286,7 +290,7 @@ const MapScript = () => {
                         var bbox = ${JSON.stringify(bbox)};
                         return renderSqlPost(host, port, tile, sql, typeName, aggrType, multiple, null);
                     }`,
-                minzoom: 10,
+                minzoom: 0,
                 maxzoom: 16.1
             });
 
@@ -297,7 +301,7 @@ const MapScript = () => {
                     'source': 'vector-tile',
                     'source-layer': 'ltdb_fp',
                     'maxzoom': 16.1,
-                    'minzoom': 10,
+                    'minzoom': 0,
                     'paint': {
                         // Increase the heatmap weight based on frequency and property magnitude
                         'heatmap-weight': heatmapWeight,
@@ -434,7 +438,7 @@ const MapScript = () => {
                         var bbox = ${JSON.stringify(bbox)};
                         return renderSqlDiffPost(host, port, tile, sql1, sql2, typeName, aggrType, multiple, null);
                     }`,
-                minzoom: 10,
+                minzoom: 0,
                 maxzoom: 16.1
             }); 
             
@@ -445,7 +449,7 @@ const MapScript = () => {
                     'source': 'vector-tile2',
                     'source-layer': 'ltdb_fp',
                     'maxzoom': 16.1,
-                    'minzoom': 10,
+                    'minzoom': 0,
                     'paint': {
                     'heatmap-weight': heatmapWeight,
                     "heatmap-color": [
@@ -619,7 +623,7 @@ const MapScript = () => {
             center: [127, 37.55], //126.986, 37.565
             zoom: 11,
             maxZoom: 16,
-            minZoom: 10,
+            minZoom: 8.5,
             tilesFunctionParams: function (tile) {
                 const port = ports.shift();
                 ports.push(port);
@@ -659,7 +663,7 @@ const MapScript = () => {
             center: [127, 37.55],
             zoom: 11,
             maxZoom: 16,
-            minZoom: 10,
+            minZoom: 8.5,
             tilesFunctionParams: function (tile) {
                 const port = ports.shift();
                 ports.push(port);
@@ -737,6 +741,8 @@ const MapScript = () => {
                 window.afterMove = true;
                 document.querySelector('.mapLoading').style.display = 'block';
                 //console.log('현재 Zoom Level: ' + window.beforeMap.getZoom());
+
+                document.querySelector('.zoom-level-container').textContent = ('Zoom Level : ' + Math.round(window.beforeMap.getZoom() * 100) / 100);
             });
 
             window.beforeMap.resize();
@@ -803,10 +809,6 @@ const MapScript = () => {
                 // center: [126.986, 37.565],
                 // zoom: 11
             },
-            minZoom: 10,
-            maxZoom: 16,
-            minzoom: 10,
-            maxzoom: 16
         });      
 
         const defaultDraw = new MapboxDraw({
@@ -1095,24 +1097,25 @@ const MapScript = () => {
 
             defaultDraw.deleteAll();
 
-            let circleRadius = 0.5;
-            if(window.beforeMap.getZoom() > 15) {
-                circleRadius = 0.1;
-            } else if(window.beforeMap.getZoom() > 14) {
-                circleRadius = 0.3;
-            } else if(window.beforeMap.getZoom() > 13) {
-                circleRadius = 0.5;
-            } else if(window.beforeMap.getZoom() > 12) {
-                circleRadius = 1.5;
-            } else if(window.beforeMap.getZoom() > 11) {
-                circleRadius = 2;
-            } else if(window.beforeMap.getZoom() > 10) {
-                circleRadius = 3;
-            } else if(window.beforeMap.getZoom() > 9) {
-                circleRadius = 2;
-            } else {
-                circleRadius = 10;
-            }
+            let circleRadius = 2;//0.5;
+
+            // if(window.beforeMap.getZoom() > 15) {
+            //     circleRadius = 0.1;
+            // } else if(window.beforeMap.getZoom() > 14) {
+            //     circleRadius = 0.3;
+            // } else if(window.beforeMap.getZoom() > 13) {
+            //     circleRadius = 0.5;
+            // } else if(window.beforeMap.getZoom() > 12) {
+            //     circleRadius = 1.5;
+            // } else if(window.beforeMap.getZoom() > 11) {
+            //     circleRadius = 2;
+            // } else if(window.beforeMap.getZoom() > 10) {
+            //     circleRadius = 3;
+            // } else if(window.beforeMap.getZoom() > 9) {
+            //     circleRadius = 2;
+            // } else {
+            //     circleRadius = 10;
+            // }
 
             defaultDraw.changeMode('draw_circle', {initialRadiusInKm: circleRadius})
         }
@@ -1319,8 +1322,8 @@ const MapScript = () => {
                 // return;
             }
 
-            if( e.target.getZoom() < 10) {
-                e.target.setZoom(10);
+            if( e.target.getZoom() < 8.5) {
+                e.target.setZoom(8.5);
                 e.preventDefault();
                 // e.target.scrollZoom.disable();
                 // return;
@@ -1433,6 +1436,9 @@ const MapScript = () => {
                         <FormControlLabel value="50" control={<Radio />} label="50대" />
                         <FormControlLabel value="60" control={<Radio />} label="60대 이상" />
                     </RadioGroup>                                     
+                </div>
+                <div className='zoom-level-container'>
+                    Zoom Level : 11
                 </div>
                 <div className='fake-container'>
                 </div>

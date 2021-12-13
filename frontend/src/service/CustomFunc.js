@@ -834,7 +834,7 @@ function updateLayer(currDate, prevDate) {
                 var bbox = ${JSON.stringify([126.76487604016523,37.42806780710028,127.18416090045505,37.70130441174812])};
                 return renderSqlPost(host, port, tile, sql, typeName, aggrType, multiple, null);
             }`,
-        minzoom: 10,
+        minzoom: 0,
         maxzoom: 16.1
     });
     
@@ -845,7 +845,7 @@ function updateLayer(currDate, prevDate) {
         'source': 'vector-tile',
         'source-layer': 'ltdb_fp',
         'maxzoom': 16.1,
-        'minzoom': 10,
+        'minzoom': 0,
         'paint': {
         // Increase the heatmap weight based on frequency and property magnitude
         'heatmap-weight': currWeight,
@@ -935,7 +935,7 @@ function updateLayer(currDate, prevDate) {
                 var bbox = ${JSON.stringify([126.76487604016523,37.42806780710028,127.18416090045505,37.70130441174812])};
                 return renderSqlDiffPost(host, port, tile, sql1, sql2, typeName, aggrType, multiple, null);
             }`,
-        minzoom: 10,
+        minzoom: 0,
         maxzoom: 16.1
     });
     
@@ -946,7 +946,7 @@ function updateLayer(currDate, prevDate) {
         'source': 'vector-tile2',
         'source-layer': 'ltdb_fp',
         'maxzoom': 16.1,
-        'minzoom': 10,
+        'minzoom': 0,
         'paint': {
         // Increase the heatmap weight based on frequency and property magnitude
         'heatmap-weight': prevWeight,
