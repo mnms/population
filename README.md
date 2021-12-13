@@ -73,3 +73,15 @@ backend 실행 : spring boot tool 사용
   - MapScript.js 1100번째 code line
   - circleRadius 변수 값 변경 => default = 2; (기본단위 Km)
 ```
+
+## REST API Service
+
+* 사용자 계정 생성
+
+```
+  - URL : localhost:{port}/api/members/create
+  - http request method : POST
+  - form-data
+    - key value 형태
+    - name : {값}, pw : {값}
+```
