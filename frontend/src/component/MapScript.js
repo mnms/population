@@ -736,7 +736,7 @@ const MapScript = () => {
                 window.beforeMove = true;
                 window.afterMove = true;
                 document.querySelector('.mapLoading').style.display = 'block';
-                console.log('현재 Zoom Level: ' + window.beforeMap.getZoom());
+                //console.log('현재 Zoom Level: ' + window.beforeMap.getZoom());
             });
 
             window.beforeMap.resize();
@@ -794,13 +794,19 @@ const MapScript = () => {
         // const container = '#mainMap';
         const map = new mapboxgl.Compare(window.beforeMap, window.afterMap, mapContainerRef.current, {
         // Set this to enable comparing two maps by mouse movement:
-            // mousemove: true
+            //mousemove: true,
             overlay: {
                 center: [window.beforeMap.getCenter().lng, window.beforeMap.getCenter().lat], //126.986, 37.565
                 zoom: window.beforeMap.getZoom(),
+                // maxZoom: 16,
+                // minZoom: 10
                 // center: [126.986, 37.565],
                 // zoom: 11
-            }
+            },
+            minZoom: 10,
+            maxZoom: 16,
+            minzoom: 10,
+            maxzoom: 16
         });      
 
         const defaultDraw = new MapboxDraw({
@@ -815,7 +821,7 @@ const MapScript = () => {
                 combine_features: false,
                 uncombine_features: false,
                 polygon: true,
-                trash: true
+                trash: false
             },            
             modes: {
               ...MapboxDraw.modes,
@@ -1080,6 +1086,13 @@ const MapScript = () => {
         });
 
         function draw_circle() {
+
+            if(!window.store.getState().menuSeleted || window.beforeMap.getZoom() < 13) {
+                alert('Draw 기능은 상세정보보기 활성과 지도 13레벨부터 가능 합니다.');
+                draw.draw.changeMode('simple_select');
+                return;
+            }   
+
             defaultDraw.deleteAll();
 
             let circleRadius = 0.5;
@@ -1096,7 +1109,7 @@ const MapScript = () => {
             } else if(window.beforeMap.getZoom() > 10) {
                 circleRadius = 3;
             } else if(window.beforeMap.getZoom() > 9) {
-                circleRadius = 5;
+                circleRadius = 2;
             } else {
                 circleRadius = 10;
             }
@@ -1121,17 +1134,32 @@ const MapScript = () => {
         map.overlay().on('draw.modechange', (e) => {
             // const data = draw.draw.getAll();
             if (draw.draw.getMode() == 'draw_polygon') {
+
+                if(!window.store.getState().menuSeleted || window.beforeMap.getZoom() < 13) {
+                    alert('Draw 기능은 상세정보보기 활성과 지도 13레벨부터 가능 합니다.');
+                    draw.draw.changeMode('simple_select');
+                    return;
+                }
+                
                 defaultDraw.deleteAll();
                 draw.draw.deleteAll();
                 draw.draw.changeMode('draw_polygon');
             } else if(draw.draw.getSelected().features.length > 0 && draw.draw.getMode() === 'simple_select') {
-                popup1.options.offset = -100;
-                popup2.options.offset = -100;
+                // popup1.options.offset = -100;
+                // popup2.options.offset = -100;
 
-                popup1.setHTML('<b>선택 모드입니다<br>도형을 이동시킬 수 있습니다</b>');
-                popup2.setHTML('<b>선택 모드입니다<br>도형을 이동시킬 수 있습니다</b>');
+                // popup1.setHTML('<b>선택 모드입니다<br>도형을 이동시킬 수 있습니다</b>');
+                // popup2.setHTML('<b>선택 모드입니다<br>도형을 이동시킬 수 있습니다</b>');
+                draw.draw.changeMode('direct_select', {featureId: draw.draw.getSelectedIds()[0]});
               
             } else if(draw.draw.getSelected().features.length > 0 && draw.draw.getMode() === 'direct_select') {
+
+                if(window.beforeMap.getZoom() < 13) {
+                    //alert('편집은 지도 13레벨부터 가능 합니다.');
+                    draw.draw.changeMode('simple_select');
+                    return;
+                }
+
                 popup1.options.offset = -100;
                 popup2.options.offset = -100;
 
@@ -1165,6 +1193,13 @@ const MapScript = () => {
                             }        
                         }
                                   
+                    }
+                } else if(draw.draw.getMode() === 'simple_select' && draw.draw.getSelectedIds().length > 0) {
+                    if(window.beforeMap.getZoom() < 13) {
+                        //alert('편집은 지도 13레벨부터 가능 합니다.');
+                        //draw.draw.changeMode('simple_select');
+                    } else {
+                        draw.draw.changeMode('direct_select', {featureId: draw.draw.getSelectedIds()[0]});
                     }
                 }
             } 
@@ -1218,11 +1253,11 @@ const MapScript = () => {
                 popup2.options.offset = -100;
 
                 popup1.setLngLat(e.lngLat)
-                .setHTML('<b>선택 모드입니다<br>도형을 이동시킬 수 있습니다</b>')
+                .setHTML('<b>선택 모드입니다 (이동만 가능)</b><br><b>13레벨 이상부터 크기 변경이 가능합니다<b>')
                 .addTo(window.beforeMap);
 
                 popup2.setLngLat(e.lngLat)
-                .setHTML('<b>선택 모드입니다<br>도형을 이동시킬 수 있습니다</b>')
+                .setHTML('<b>선택 모드입니다 (이동만 가능)</b><br><b>13레벨 이상부터 크기 변경이 가능합니다<b>')
                 .addTo(window.afterMap);                    
             } else if(draw.draw.getSelected().features.length > 0 && draw.draw.getMode() === 'direct_select') {
                 popup1.options.offset = -100;
@@ -1249,18 +1284,51 @@ const MapScript = () => {
             }
         })
 
+        // map.overlay().on('moveend', (e) => {
+        //     console.log('moveend ' + e.target.getZoom());
+        // })
+
+        // map.overlay().on('movestart', (e) => {
+        //     console.log('movestart ' + e.target.getZoom());
+        // })
+
         map.overlay().on('wheel', (e) => {
+            
+            // console.log(e.target._zooming);
+            // console.log('e.target : ' + e.target.getZoom());
+            // console.log('beforemap : ' + window.beforeMap.getZoom());
+            // console.log('aftermap : ' + window.afterMap.getZoom());
+
+            if( e.target.getZoom() < 13 ) {
+                if(draw.draw.getSelected().features.length > 0) {
+                    draw.draw.changeMode('simple_select');
+
+                    if(popup1.isOpen()) {
+                        popup1.remove();
+                    }
+        
+                    if(popup2.isOpen()) {
+                        popup2.remove();
+                    }
+                }
+            }
+
             if( e.target.getZoom() > 16 ) {
                 e.target.setZoom(16);
                 e.preventDefault();
-                return;
+                // return;
             }
 
-            if( e.target.getZoom() < 10 ) {
+            if( e.target.getZoom() < 10) {
                 e.target.setZoom(10);
                 e.preventDefault();
-                return;
+                // e.target.scrollZoom.disable();
+                // return;
             }
+
+            // if(!e.target.scrollZoom.isEnabled()) {
+            //     e.target.scrollZoom.enable();
+            // }
         });
 
         function debounce(fn, delay) {
@@ -1290,7 +1358,7 @@ const MapScript = () => {
         }        
 
         function updateArea(e) {
-            const data = draw.draw.getAll();
+            const data = draw.draw.getSelected();
 
             if (data.features.length > 0) {
 

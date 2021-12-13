@@ -20,7 +20,6 @@ function numberFloor(x) {
 }
 
 export function setChartOnDraw(chart1ContainerRef, chart2ContainerRef, data, eventTimeFormat, exist, isQuery) {
-   
     if(isQuery) {
 
         if( window.statistics.length > 0 ) {
@@ -365,7 +364,7 @@ export function setChartOnDraw(chart1ContainerRef, chart2ContainerRef, data, eve
     //     sum(exist_f_50) as exist_f_50, sum(exist_f_60) as exist_f_60, event_time
     // FROM (${subQuery}) GROUP BY event_time ORDER BY event_time`;
 
-    console.log(query);
+    // console.log(query);
     new MapdCon()
         .host(config.host)
         .port(config.port[1])
@@ -398,7 +397,7 @@ export function setChartOnDraw(chart1ContainerRef, chart2ContainerRef, data, eve
                     })
 
                     connector.queryAsync(query).then(function (statistics2) {
-                        console.log(statistics2);
+                        // console.log(statistics2);
                         window.statistics = statistics2;
 
                         // const hours = statistics2.map(function (s) {
@@ -488,8 +487,8 @@ export function setChartOnDraw(chart1ContainerRef, chart2ContainerRef, data, eve
                                 }
                             }
                             
-                            console.log('manArray : ' + manArray);
-                            console.log('womanArray : ' + womanArray);
+                            // console.log('manArray : ' + manArray);
+                            // console.log('womanArray : ' + womanArray);
                             
                             createCharts(chart1ContainerRef, chart2ContainerRef, hours, result, manArray, womanArray);
                             
@@ -537,8 +536,8 @@ export function createCharts(chart1ContainerRef, chart2ContainerRef, hours, data
         return Math.min(a, b);
     });
 
-    console.log(numberFloor(parseInt(yAxisMin1 / 2)))
-    console.log(numberFloor(parseInt(yAxisMin2 / 2)))
+    // console.log(numberFloor(parseInt(yAxisMin1 / 2)))
+    // console.log(numberFloor(parseInt(yAxisMin2 / 2)))
 
     Highcharts.chart(chart1ContainerRef, {
         chart: {
@@ -1045,7 +1044,7 @@ export function calculateSumAndMax(mapObj, sourceName, propertyNames) {
         for (let key in features[i].properties) {
             if (isNaN(features[i].properties[key])) {
                 if (first) {
-                    console.log(features[i]);
+                    // console.log(features[i]);
                     first = false;
                 }
                 continue;
@@ -1058,7 +1057,7 @@ export function calculateSumAndMax(mapObj, sourceName, propertyNames) {
         max = Math.max(max, s)
         //sum += s;
     }
-    console.log(max);
+    // console.log(max);
     let weight = mapObj.getPaintProperty(sourceName, 'heatmap-weight');
     weight[weight.length - 2] = parseInt(max);//parseInt(sum/max) / 2;
     mapObj.setPaintProperty(sourceName, 'heatmap-weight', weight);
@@ -1086,7 +1085,7 @@ export function getCalculateMax(mapObj, sourceName, propertyNames) {
         for (let key in features[i].properties) {
             if (isNaN(features[i].properties[key])) {
                 if (first) {
-                    console.log(features[i]);
+                    // console.log(features[i]);
                     first = false;
                 }
                 continue;
@@ -1135,7 +1134,7 @@ export function calculateShape(mapObj, sourceName) {
 
         result.push(json);
     }
-    console.log(result);
+    // console.log(result);
     return result;
 }
 
@@ -1158,7 +1157,7 @@ export function calculateSumAndMax2(mapObj, sourceName) {
         max = Math.max(max, maxValue);
         //sum += sumValue;
     }
-    console.log(max);  
+    // console.log(max);  
 
     if(max == 5e-324) {
         max = 10000000;
@@ -1192,7 +1191,7 @@ export function getCalculateMax2(mapObj, sourceName, propertyNames) {
         for (let key in features[i].properties) {
             if (isNaN(features[i].properties[key])) {
                 if (first) {
-                    console.log(features[i]);
+                    // console.log(features[i]);
                     first = false;
                 }
                 continue;

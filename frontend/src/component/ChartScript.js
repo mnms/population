@@ -45,7 +45,7 @@ const ChartScript = () => {
         } else if(window.beforeMap.getZoom() > 10) {
             circleRadius = 3;
         } else if(window.beforeMap.getZoom() > 9) {
-            circleRadius = 5;
+            circleRadius = 2;
         } else {
             circleRadius = 10;
         }
