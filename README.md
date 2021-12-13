@@ -19,6 +19,7 @@ Frontend 실행 : cd /root/population/frontend
 ```
 - 실행
 $ cd frontend
+$ npm install
 $ npm start
 
 - 빌드
