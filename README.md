@@ -65,3 +65,11 @@ backend 실행 : spring boot tool 사용
  $ serve -l 8066 -s build
  - http://localhost:8066 URL로 정상 동작 확인
 ```
+
+## 사용자 영역 크기 변경 (소스코드)
+```
+  - cd frontend/src/component
+  - ChartScript.js 34번째 code line
+  - MapScript.js 1100번째 code line
+  - circleRadius 변수 값 변경 => default = 2; (기본단위 Km)
+```
