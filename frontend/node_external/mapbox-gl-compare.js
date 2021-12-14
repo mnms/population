@@ -97,8 +97,12 @@ function Compare(a, b, container, options) {
         },
         'layers': [],
         'center': options.overlay.center,
-        'zoom': options.overlay.zoom
-      }
+        'zoom': options.overlay.zoom,
+        'minZoom': options.overlay.minZoom,
+        'maxZoom': options.overlay.maxZoom
+      },
+      'minZoom': options.overlay.minZoom,
+      'maxZoom': options.overlay.maxZoom 
     });
     this._clearSync = syncMove(this._overlay, a, b);
   }

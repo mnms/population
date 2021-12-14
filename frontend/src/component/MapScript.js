@@ -731,6 +731,10 @@ const MapScript = () => {
                 }
             });
 
+            // window.beforeMap.on('wheel', function(e) {
+            //     console.log(e);
+            // });
+
             window.beforeMap.on('move', function(e) {
                 window.beforeMove = false;
                 window.afterMove = false;
@@ -804,8 +808,8 @@ const MapScript = () => {
             overlay: {
                 center: [window.beforeMap.getCenter().lng, window.beforeMap.getCenter().lat], //126.986, 37.565
                 zoom: window.beforeMap.getZoom(),
-                // maxZoom: 16,
-                // minZoom: 10
+                minZoom: 8.5,
+                maxZoom: 16,
                 // center: [126.986, 37.565],
                 // zoom: 11
             },
@@ -1294,7 +1298,8 @@ const MapScript = () => {
         // map.overlay().on('movestart', (e) => {
         //     console.log('movestart ' + e.target.getZoom());
         // })
-
+        
+        
         map.overlay().on('wheel', (e) => {
             
             // console.log(e.target._zooming);
@@ -1315,23 +1320,6 @@ const MapScript = () => {
                     }
                 }
             }
-
-            if( e.target.getZoom() > 16 ) {
-                e.target.setZoom(16);
-                e.preventDefault();
-                // return;
-            }
-
-            if( e.target.getZoom() < 8.5) {
-                e.target.setZoom(8.5);
-                e.preventDefault();
-                // e.target.scrollZoom.disable();
-                // return;
-            }
-
-            // if(!e.target.scrollZoom.isEnabled()) {
-            //     e.target.scrollZoom.enable();
-            // }
         });
 
         function debounce(fn, delay) {
