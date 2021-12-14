@@ -76,9 +76,25 @@ backend 실행 : spring boot tool 사용
 ```
 
 ## REST API Service
+* Service 관련 source code -> population/src/main/java/kr/co/ltdb/controller/MemberController.java
 
-* 사용자 계정 생성
+* 계정 리스트 조회
+```
+  - URL : localhost:{port}/api/members
+  - http request method : GET
+```
 
+* 계정 조회
+```
+  - URL : localhost:{port}/api/members
+  - http request method : GET
+  - form-data
+    - key value 형태
+    - name : {값}  
+```
+
+
+* 계정 생성
 ```
   - URL : localhost:{port}/api/members/create
   - http request method : POST
