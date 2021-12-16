@@ -19,7 +19,6 @@ Frontend 실행 : cd /root/population/frontend
 ```
 - 실행
 $ cd frontend
-$ npm install
 $ npm start
 
 - 빌드
@@ -67,6 +66,25 @@ backend 실행 : spring boot tool 사용
  - http://localhost:8066 URL로 정상 동작 확인
 ```
 
+## HTTP API 서버 설정 확인
+
+* VectorTile 및 Chart 데이터를 가져오기 위한 접속 정보
+
+```
+  경로 : cd population/frontend/src
+  접속정보 : server.json 파일 확인
+  
+  {
+    "user": "ltdb",
+    "password": "ltdb",
+    "database": "default",
+    "protocol": "http",
+    "host": "fbg01",
+    "port": [4762, 4763, 4764, 4765, 4766, 4767, 4768, 4769, 4770, 4771, 4772, 4773]
+  }
+  
+```
+
 ## 사용자 영역 크기 변경 (소스코드)
 ```
   - cd frontend/src/component
@@ -77,6 +95,8 @@ backend 실행 : spring boot tool 사용
 
 ## REST API Service
 * Service 관련 source code -> population/src/main/java/kr/co/ltdb/controller/MemberController.java
+
+* javascript 상의 테스트가 아니라면 postman(https://www.postman.com/) 설치하여, URL 테스트하면 편리합니다.
 
 * 계정 리스트 조회
 ```
@@ -93,7 +113,6 @@ backend 실행 : spring boot tool 사용
     - name : {값}  
 ```
 
-
 * 계정 생성
 ```
   - URL : localhost:{port}/api/members/create
@@ -102,3 +121,214 @@ backend 실행 : spring boot tool 사용
     - key value 형태
     - name : {값}, pw : {값}
 ```
+
+===
+
+## 운영 시 필요한 가이드
+
+1. HTTP API Connection / SQL 및 결과 확인
+  * 해당 서비스는 Web(Client) 환경에서 Thrift를 통한 내용입니다. (html/javascript 구현)
+```
+  1) Basic Query
+  - frontend/src/js 폴더의 browser-connector.js import 하여 사용
+  - Input Value : String (SQL문)
+  - Out Value : SQL문 결과에 대한 Json Data
+  
+  * MapdCon 객체를 이용한 접속 및 SQL 테스트
+  
+    new MapdCon() // API서버 접속
+        .host("fbg01")
+        .port("4762") 
+        .dbName("default") 
+        .user("ltdb")
+        .password("ltdb")
+        .connectAsync()
+        .then(function (connector) { // 커넥션 객체
+            
+            var query = "select max(event_time) from ltdb_fp_history where table_name='ltdb_fp'"; // SQL문 작성
+            connector.queryAsync(query, {columnarResults: false}).then(function (result) { // 커넥션 객체를 이용한 SQL 요청
+               console.log(result); // 결과 값
+            });
+        })  
+        
+
+  2) Vector tile Query
+  * mapbox-gl api 숙지 필요
+  - 관련 라이브러리 Import 필요
+    - frontend/src/js 폴더의 mapbox-gl.js import 하여 사용
+    - frontend/external 또는 frontend/build/static/js 폴더의 global-mercator.js, pako.js, vectortile-utils.js import 하여 사용
+    
+  //mapboxgl 사용하기 위한 토큰 필요
+  mapboxgl.accessToken = {토큰값(String)}; //'pk.eyJ1IjoibGVlc2giLCJhIjoiY0thWXdQbyJ9.fPGnL5s0k8ptNPY7P1S1aA';
+  
+  //API서버에 Tile 요청 시 사용할 포트배열 필요.
+  var ports = [4762, 4763, 4764, 4765, 4766, 4767, 4768, 4769, 4770, 4771, 4772, 4773];
+  
+  //Map 객체 생성
+  var map = new mapboxgl.Map({
+            container: {html div id},
+            hash: true,
+            style: {
+                'version': 8,
+                'sources': {
+                    'raster-tiles': {
+                        'type': 'raster',
+                        'tiles': [
+                            'http://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'
+                        ],
+                        'tileSize': 256
+                    }
+                },
+                'layers': [{
+                    'id': 'base-map',
+                    'type': 'raster',
+                    'source': 'raster-tiles',
+                    'minzoom': 0,
+                    'maxzoom': 22
+                }]
+            },
+            center: [127, 37.55], //126.986, 37.565
+            zoom: 11,
+            maxZoom: 16,
+            minZoom: 8.5,
+            tilesFunctionParams: function (tile) { // 커스텀 함수 : tile 요청 시 여러 port로 요청하기 위한 설정
+                const port = ports.shift();
+                ports.push(port);
+    
+                return {
+                    host: config.host,
+                    port: port,
+                    eventTime1: null,
+                    eventTime2: null
+                }
+            }            
+            //interactive: false
+   });  
+   
+   //Map load 및 필요 라이브러리 가져오기
+   //Vector layer 생성
+   map.on('load', function() {
+      map.style.dispatcher.broadcast('loadWorkerSource', { //broadcast를 이용한 라이브러리 import
+          name: "pako",
+          url: `http://${window.location.host}/static/js/pako.js`
+      }, function (e) {
+          if (e) {
+              console.log(e);
+          }
+      });   
+      
+      map.style.dispatcher.broadcast('loadWorkerSource', {
+          name: "global-mercator",
+          url: `http://${window.location.host}/static/js/global-mercator.js`
+      }, function (e) {
+          if (e) {
+              console.log(e);
+          }
+      });  
+      
+      map.style.dispatcher.broadcast('loadWorkerSource', {
+          name: "vectortile-utils",
+          url: `http://${window.location.host}/static/js/vectortile-utils.js`
+      }, function (e) {
+          if (e) {
+              console.log(e);
+          }
+      });      
+      
+      //Vector Source 생성
+      //renderSqlPost 함수 : SQL문 하나만 요청하여 결과값 리턴 ( ex)현재 유동인구 표현 시 사용 )
+      map.addSource('vector-tile', {
+          type: 'vector',
+          tilesFunction: `function (tile) { // 커스텀 함수
+                  var host = tile.tilesFunctionParams.host;
+                  var port = tile.tilesFunctionParams.port;  
+
+                  var sql = ""; //데이터를 가져올 Query문 작성
+                  var typeName = "ltdb_fp";
+                  var aggrType = "sum";
+                  var multiple = false;
+                  return renderSqlPost(host, port, tile, sql, typeName, aggrType, multiple, null);
+              }`,
+          minzoom: 0,
+          maxzoom: 16.1
+      });      
+      
+      //증감 유동인구 데이터 가져올 때 사용하는 함수
+      * 하나의 예이므로 같은 map객체 사용.
+      //renderSqlDiffPost 함수 : SQL문 2가지 요청하여 subtract한 결과값 리턴 ( ex)증감 유동인구 표현 시 사용 )
+      map.addSource('vector-tile', {
+          type: 'vector',
+          tilesFunction: `function (tile) { // 커스텀 함수
+                  var host = tile.tilesFunctionParams.host;
+                  var port = tile.tilesFunctionParams.port;  
+                  
+                  //컬럼 별 subtract은 sql1 - sql2 
+                  var sql1 = ""; //기준 데이터를 가져올 Query문 작성
+                  var sql2 = ""; //비교 데이터를 가져올 Query문 작성
+                  var typeName = "ltdb_fp";
+                  var aggrType = "sum";
+                  var multiple = false;
+                  return renderSqlDiffPost(host, port, tile, sql1, sql2, typeName, aggrType, multiple, null);
+              }`,
+          minzoom: 0,
+          maxzoom: 16.1
+      });          
+      
+      //Vector Layer 생성
+      map.addLayer({...});
+   
+   });
+```
+
+2. 구현된 Source의 HTTP API Service 사용 확인
+  
+  - 캘린더 관련하여, ltdb_fp_history 테이블의 최신 날짜 Query
+  ```
+    - 소스 경로 : frontend/src/component/MenuComponent.jsx
+    - 69번째 라인 확인
+    - 사용 SQL 
+      - "select max(event_time) from ltdb_fp_history where table_name='ltdb_fp' limit 1"
+  ```
+  
+  - Vector Tile Query
+  ```
+    - 소스 경로 : frontend/src/component/MenuComponent.jsx
+    
+    1) 92번째 라인 확인
+    - 사용 SQL 
+      - "SELECT (exist_m_00 + exist_m_10 + exist_m_20 + exist_m_30 + exist_m_40 + exist_m_50 + exist_m_60 + exist_m_70 + exist_m_80 + exist_m_90 + exist_f_00 + exist_f_10 + exist_f_20 + exist_f_30 + exist_f_40 + exist_f_50 + exist_f_60 + exist_f_70 + exist_f_80 + exist_f_90) as exist, geometry FROM ltdb_fp WHERE event_time = '${currPrevDateString.curr}'"
+    
+    2) 192번째 라인 확인
+      - "SELECT (exist_m_00 + exist_m_10 + exist_m_20 + exist_m_30 + exist_m_40 + exist_m_50 + exist_m_60 + exist_m_70 + exist_m_80 + exist_m_90 + exist_f_00 + exist_f_10 + exist_f_20 + exist_f_30 + exist_f_40 + exist_f_50 + exist_f_60 + exist_f_70 + exist_f_80 + exist_f_90) as exist, geometry FROM ltdb_fp WHERE event_time = '${currPrevDateString.curr}'"; //현재 날짜
+      - "SELECT (exist_m_00 + exist_m_10 + exist_m_20 + exist_m_30 + exist_m_40 + exist_m_50 + exist_m_60 + exist_m_70 + exist_m_80 + exist_m_90 + exist_f_00 + exist_f_10 + exist_f_20 + exist_f_30 + exist_f_40 + exist_f_50 + exist_f_60 + exist_f_70 + exist_f_80 + exist_f_90) as exist, geometry FROM ltdb_fp WHERE event_time = '${currPrevDateString.prev}'"; //이전 날짜
+
+  ```
+  
+  - Chart Query
+  ```
+    - 소스 경로 : frontend/src/service/CustomFunc.jsx
+    
+    1) 막대차트 - 현재날짜 데이터 가져오기. 329번째 라인 확인
+      - `SELECT
+            (sum(exist_m_00) + sum(exist_m_10)) as exist_m_10, sum(exist_m_20) as exist_m_20, sum(exist_m_30) as exist_m_30,
+            sum(exist_m_40) as exist_m_40, sum(exist_m_50) as exist_m_50, (sum(exist_m_60) + sum(exist_m_70) +
+            sum(exist_m_80) + sum(exist_m_90)) as exist_m_60,
+            (sum(exist_f_00) + sum(exist_f_10)) as exist_f_10, sum(exist_f_20) as exist_f_20, sum(exist_f_30) as exist_f_30,
+            sum(exist_f_40) as exist_f_40, sum(exist_f_50) as exist_f_50, (sum(exist_f_60) + sum(exist_f_70) +
+            sum(exist_f_80) + sum(exist_f_90)) as exist_f_60, event_time        
+        FROM ltdb_fp    
+        WHERE ST_CONTAINS(ST_GEOMFROMTEXT('${wkt}'), geometry) AND event_time = '${eventTime1}'
+        GROUP BY event_time ORDER BY event_time`
+        
+     1) 라인차트 - 24시간 기준 시간 별 데이터 가져오기. 341번째 라인 확인   
+       - `SELECT
+            (sum(exist_m_00) + sum(exist_m_10)) as exist_m_10, sum(exist_m_20) as exist_m_20, sum(exist_m_30) as exist_m_30,
+            sum(exist_m_40) as exist_m_40, sum(exist_m_50) as exist_m_50, (sum(exist_m_60) + sum(exist_m_70) +
+            sum(exist_m_80) + sum(exist_m_90)) as exist_m_60,
+            (sum(exist_f_00) + sum(exist_f_10)) as exist_f_10, sum(exist_f_20) as exist_f_20, sum(exist_f_30) as exist_f_30,
+            sum(exist_f_40) as exist_f_40, sum(exist_f_50) as exist_f_50, (sum(exist_f_60) + sum(exist_f_70) +
+            sum(exist_f_80) + sum(exist_f_90)) as exist_f_60,
+            substring(event_time, 0, ${eventTimeFormat.length - 2}) as event_time
+        FROM ltdb_fp
+        WHERE ST_CONTAINS(ST_GEOMFROMTEXT('${wkt}'), geometry) AND event_time IN(${QueryTimeArray.toString()})  GROUP BY event_time ORDER BY event_time`;
+  ```
