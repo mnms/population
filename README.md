@@ -12,6 +12,43 @@ Visualization of the floating population
 - Spring Tool Suite 4 
 ```
 
+## 프로젝트 기본 구성
+```
+  * 전체
+      frontend  // Client 웹 서비스 (node, npm, react 구성)
+      src       // backend 서비스 : java class (로그인 처리)
+      pom.xml   // maven dependencies : springframework 사용
+  
+  * Frontend (React App 기본 구성)
+      external          // Vector Tile 서비스 시 필요한 라이브러리
+      node_external     // node_module 관련 별도 커스텀한 라이브러리
+      public
+      src               // Web 로직
+        component
+          AuthenticatedRoute.jsx    // 로그인 인증 처리
+          InstructorApp.jsx         // 페이지 라우터 처리
+          LoginComponent.jsx        // 로그인 컴포넌트
+          LogoutComponent.jsx       // 로그아웃 컴포넌트
+          MenuComponent.jsx         // 최상단Bar 메뉴 컴포넌트
+          MainComponent.jsx         // 지도/차트 영역 컴포넌트
+          MapScript.js              // 지도기능 스크립트
+          ChartScript.js            // 차트기등 스크립트
+        css
+        js
+        redux                       // react-redux 사용 (상태 값 저장)
+        service
+          AuthenticationService.js  // 로그인 페이지에서 로그인 시 backend 통신 및 인증 처리 확인
+          CustomFunc.js             // 지도/차트 기능에 필요한 함수들
+        App.css
+        App.js
+        index.css
+        index.js
+        server.json                 // HTTP API 서버에 Connect 하기 위한 정보
+        serviceWorker.js
+      package.json                  // npm, node 관련 설정
+      
+```
+
 ## 실행 및 빌드
 
 Frontend 실행 : cd /root/population/frontend
