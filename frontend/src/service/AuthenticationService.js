@@ -46,6 +46,8 @@ class AuthenticationService {
         if(window.MapdCon != undefined) {
             window.MapdCon.disconnect();
         }
+
+        window.currentDate = undefined;
         
         sessionStorage.removeItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
     }
