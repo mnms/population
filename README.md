@@ -39,7 +39,7 @@ Visualization of the floating population
         service
           AuthenticationService.js  // 로그인 페이지에서 로그인 시 backend 통신 및 인증 처리 확인
           CustomFunc.js             // 지도/차트 기능에 필요한 함수들
-        App.css
+        App.css                     // 커스텀 css 포함
         App.js
         index.css
         index.js
