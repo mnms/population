@@ -122,6 +122,136 @@ backend 실행 : spring boot tool 사용
   
 ```
 
+## HTTP API 사용하기 위한 관련 테이블 정보
+  
+  * 테이블 DDL CREATE 관련해서는 HTTP API 서버 README 참고.
+  
+```
+  * ltdb_fp 테이블 : 유동인구 데이터 (지도/차트 구현 시 사용)
+  
+  CREATE table ltdb_fp (
+    adm_code string,
+    x double,
+    y double,
+    recordid integer,
+    block_cd long,
+    exist_m_00 double,
+    exist_m_10 double,
+    exist_m_20 double,
+    exist_m_30 double,
+    exist_m_40 double,
+    exist_m_50 double,
+    exist_m_60 double,
+    exist_m_70 double,
+    exist_m_80 double,
+    exist_m_90 double,
+    exist_f_00 double,
+    exist_f_10 double,
+    exist_f_20 double,
+    exist_f_30 double,
+    exist_f_40 double,
+    exist_f_50 double,
+    exist_f_60 double,
+    exist_f_70 double,
+    exist_f_80 double,
+    exist_f_90 double,
+    home_m_00 double,
+    home_m_10 double,
+    home_m_20 double,
+    home_m_30 double,
+    home_m_40 double,
+    home_m_50 double,
+    home_m_60 double,
+    home_m_70 double,
+    home_m_80 double,
+    home_m_90 double,
+    home_f_00 double,
+    home_f_10 double,
+    home_f_20 double,
+    home_f_30 double,
+    home_f_40 double,
+    home_f_50 double,
+    home_f_60 double,
+    home_f_70 double,
+    home_f_80 double,
+    home_f_90 double,
+    work_m_00 double,
+    work_m_10 double,
+    work_m_20 double,
+    work_m_30 double,
+    work_m_40 double,
+    work_m_50 double,
+    work_m_60 double,
+    work_m_70 double,
+    work_m_80 double,
+    work_m_90 double,
+    work_f_00 double,
+    work_f_10 double,
+    work_f_20 double,
+    work_f_30 double,
+    work_f_40 double,
+    work_f_50 double,
+    work_f_60 double,
+    work_f_70 double,
+    work_f_80 double,
+    work_f_90 double,
+    in_m_00 double,
+    in_m_10 double,
+    in_m_20 double,
+    in_m_30 double,
+    in_m_40 double,
+    in_m_50 double,
+    in_m_60 double,
+    in_m_70 double,
+    in_m_80 double,
+    in_m_90 double,
+    in_f_00 double,
+    in_f_10 double,
+    in_f_20 double,
+    in_f_30 double,
+    in_f_40 double,
+    in_f_50 double,
+    in_f_60 double,
+    in_f_70 double,
+    in_f_80 double,
+    in_f_90 double,
+    geohash string,
+    geometry string,
+    event_time string
+    )
+    USING r2 OPTIONS
+    (
+    table '900',
+    host 'fbg02',
+    port '18900',
+    partitions 'event_time geohash',
+    mode 'nvkvs',
+    rowstore 'false',
+    at_least_one_partition_enabled 'no',
+    group_query_enabled 'yes',
+    geometry_type 'point'
+  )
+
+
+  * ltdb_fp_history 테이블 : 날짜별 유동인구 히스토리 테이블 (최신날짜 업데이트(캘린더)에  ) 
+  
+  CREATE table ltdb_fp_history (
+    event_time string,
+    table_name string
+    )
+    USING r2 OPTIONS
+    (
+    table '910',
+    host 'fbg02',
+    port '18900',
+    partitions 'table_name event_time',
+    mode 'nvkvs',
+    rowstore 'false',
+    at_least_one_partition_enabled 'no'
+  )
+  
+```
+
 ## 사용자 영역 크기 변경 (소스코드)
 ```
   - cd frontend/src/component
