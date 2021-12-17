@@ -288,7 +288,7 @@ backend 실행 : spring boot tool 사용
     - name : {값}, pw : {값}
 ```
 
-===
+
 
 ## 운영 시 필요한 가이드
 
