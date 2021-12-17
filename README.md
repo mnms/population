@@ -1,7 +1,6 @@
 # population
 Visualization of the floating population
 
-===
 
 ## 환경설정 (개발 툴 포함)
 ```
