@@ -47,8 +47,8 @@ Visualization of the floating population
       package.json                  // npm, node 관련 설정
       
 ```
-
-## 실행 및 빌드
+## 빌드 및 실행
+### 1) npm 사용
 
 Frontend 실행 : cd /root/population/frontend
 
@@ -80,7 +80,7 @@ backend 실행 : spring boot tool 사용
   - target 폴더 확인
 ```
 
-## 배포 및 설치
+### 2) jar 사용
 
 1. jar 배포 및 실행
 
