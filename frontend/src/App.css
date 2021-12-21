@@ -405,11 +405,6 @@ svg[data-icon="calendar"] {
   }
 }
 
-/* .mapboxgl-ctrl-group {
-    bottom: 4px !important;
-    margin: 10px 10px 20px 30px !important;
-} */
-
 .mapboxgl-ctrl-top-right {
     top: 120px !important;
     z-index: 5 !important;

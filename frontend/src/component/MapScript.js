@@ -1093,8 +1093,8 @@ const MapScript = () => {
 
         function draw_circle() {
 
-            if(!window.store.getState().menuSeleted || window.beforeMap.getZoom() < 13) {
-                alert('Draw 기능은 상세정보보기 활성과 지도 13레벨부터 가능 합니다.');
+            if(window.beforeMap.getZoom() < 13) {
+                alert('Draw 기능은 지도 13레벨부터 가능 합니다.');
                 draw.draw.changeMode('simple_select');
                 return;
             }   
@@ -1400,6 +1400,8 @@ const MapScript = () => {
             //el_circle.textContent = 'C';
             el_parent.insertBefore(el_circle, el_parent.firstChild);	
         }
+
+        document.querySelector('.mapboxgl-ctrl-group').style.display = 'none';
 
         // clean up on unmount
         return () => {

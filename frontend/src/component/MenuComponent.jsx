@@ -45,6 +45,12 @@ function MenuComponent(props) {
     const [dateValue, setDateValue] = React.useState( (window.currentDate === undefined ? window.store.getState().currentDate : window.currentDate) ); //new Date()
 
     const onChange = event => {
+        if(event) {
+            document.querySelector('.mapboxgl-ctrl-group').style.display = 'block';
+        } else {
+            document.querySelector('.mapboxgl-ctrl-group').style.display = 'none';
+        }
+
         setSelected(event);
         props.onChange(event);
         window.store.dispatch(updateStates(event))
