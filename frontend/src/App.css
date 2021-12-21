@@ -177,6 +177,28 @@ and (min-width: 1821px) {
     position: absolute; 
 }
 
+.zoom-level-container {
+    -ms-user-select: none; 
+    -moz-user-select: -moz-none; 
+    -webkit-user-select: none; 
+    -khtml-user-select: none; 
+    user-select:none;
+    height: 25px;
+    width: 200px;  
+    z-index: 3;
+    right: 10px;  
+    top: 5px;  
+    position: absolute; 
+    box-shadow: none !important;
+    border: 1px solid #3b3a3a;
+    background: #3b3a3a;
+    border-radius: 2px;
+    opacity: 0.8;
+    color: white;
+    vertical-align: middle;
+    text-align: center;
+}
+
 .MuiFormControlLabel-root {
     margin: 1px !important;
 }
@@ -382,11 +404,6 @@ svg[data-icon="calendar"] {
     transform: rotate(360deg);
   }
 }
-
-/* .mapboxgl-ctrl-group {
-    bottom: 4px !important;
-    margin: 10px 10px 20px 30px !important;
-} */
 
 .mapboxgl-ctrl-top-right {
     top: 120px !important;

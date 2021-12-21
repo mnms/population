@@ -373,14 +373,44 @@ export function setChartOnDraw(chart1ContainerRef, chart2ContainerRef, data, eve
         .password(config.password)
         .connectAsync()
         .then(function (connector) {
+
+            let currSumData = [];
+
             connector.queryAsync(currDateQuery).then(function (statistics) {
                 // if( statistics.length > 0 ) {
 
                     //if(eventTime1 === statistics[statistics.length - 1].event_time) {
 
-                    window.currStatistics = statistics;
+                window.currStatistics = statistics;
 
-                    const currSumData = statistics.map(function (s) {
+                currSumData = statistics.map(function (s) {
+                    let sum = 0;
+                    for (let key in s) {
+                        if(key !== 'event_time') {
+                            if(exist != undefined) {
+                                if( exist.indexOf(key) > -1 ) {
+                                    sum += s[key];
+                                }
+                            } else {
+                                sum += s[key];
+                            }
+                        }
+                    }
+                    return parseInt(sum);
+                })
+            });
+
+            connector.queryAsync(query).then(function (statistics2) {
+                // console.log(statistics2);
+                window.statistics = statistics2;
+
+                // const hours = statistics2.map(function (s) {
+                //     return s.event_time.toString().substr(s.event_time.toString().length - 2, s.event_time.toString().length);
+                // })
+
+                if(statistics2.length > 0) {
+
+                    const datas = statistics2.map(function (s) {
                         let sum = 0;
                         for (let key in s) {
                             if(key !== 'event_time') {
@@ -393,136 +423,104 @@ export function setChartOnDraw(chart1ContainerRef, chart2ContainerRef, data, eve
                                 }
                             }
                         }
-                        return parseInt(sum);
+                        return {hour: s.event_time.substr(s.event_time.length - 2, s.event_time.length), sum: parseInt(sum)};
                     })
+                    
+                    let resultDatas = [];
 
-                    connector.queryAsync(query).then(function (statistics2) {
-                        // console.log(statistics2);
-                        window.statistics = statistics2;
-
-                        // const hours = statistics2.map(function (s) {
-                        //     return s.event_time.toString().substr(s.event_time.toString().length - 2, s.event_time.toString().length);
-                        // })
-
-                        if(statistics2.length > 0) {
-
-                            const datas = statistics2.map(function (s) {
-                                let sum = 0;
-                                for (let key in s) {
-                                    if(key !== 'event_time') {
-                                        if(exist != undefined) {
-                                            if( exist.indexOf(key) > -1 ) {
-                                                sum += s[key];
-                                            }
-                                        } else {
-                                            sum += s[key];
-                                        }
-                                    }
-                                }
-                                return {hour: s.event_time.substr(s.event_time.length - 2, s.event_time.length), sum: parseInt(sum)};
-                            })
-                            
-                            let resultDatas = [];
-    
-                            if( hours[hours.length-1] === datas[0].hour ) {
-                                datas.forEach(function(data, index) {
-                                    if(index != 0) {
-                                        resultDatas.push(data);
-                                    }
-                                });
-                            } else {
-                                resultDatas = datas;
+                    if( hours[hours.length-1] === datas[0].hour ) {
+                        datas.forEach(function(data, index) {
+                            if(index != 0) {
+                                resultDatas.push(data);
                             }
-    
-                            let result = [];
-                            hours.forEach(function(hour, index) {
-                                result[index] = 0;
-                                resultDatas.forEach(function(json, index2) {
-                                    if(hour === json.hour) {
-                                        result[index] = json.sum;
-                                    }
-                                })
-                            })
-                
-                            for(let i=0; i<result.length; i++) {
-                                if(result[i] === undefined) {
-                                    result[i] = 0;
-                                }
-                            }                            
-    
-                            const currentData = statistics[statistics.length - 1];
-                            let manArray = [0,0,0,0,0,0];
-                            let womanArray = [0,0,0,0,0,0];
-                            for (let key in currentData) {
-                                if(key.indexOf('_m_') > -1) {
-                                    currentData[key] = parseInt(currentData[key]);
-                                    if(key.indexOf('_10') > -1) {
-                                        manArray[0] += currentData[key];
-                                    } else if(key.indexOf('_20') > -1) {
-                                        manArray[1] += currentData[key];
-                                    } else if(key.indexOf('_30') > -1) {
-                                        manArray[2] += currentData[key];
-                                    } else if(key.indexOf('_40') > -1) {
-                                        manArray[3] += currentData[key];
-                                    } else if(key.indexOf('_50') > -1) {
-                                        manArray[4] += currentData[key];
-                                    } else if(key.indexOf('_60') > -1) {
-                                        manArray[5] += currentData[key];
-                                    }
-                                } else {
-                                    currentData[key] = parseInt(currentData[key]);
-                                    if(key.indexOf('_10') > -1) {
-                                        womanArray[0] += currentData[key];
-                                    } else if(key.indexOf('_20') > -1) {
-                                        womanArray[1] += currentData[key];
-                                    } else if(key.indexOf('_30') > -1) {
-                                        womanArray[2] += currentData[key];
-                                    } else if(key.indexOf('_40') > -1) {
-                                        womanArray[3] += currentData[key];
-                                    } else if(key.indexOf('_50') > -1) {
-                                        womanArray[4] += currentData[key];
-                                    } else if(key.indexOf('_60') > -1) {
-                                        womanArray[5] += currentData[key];
-                                    }
-                                }
+                        });
+                    } else {
+                        resultDatas = datas;
+                    }
+
+                    let result = [];
+                    hours.forEach(function(hour, index) {
+                        result[index] = 0;
+                        resultDatas.forEach(function(json, index2) {
+                            if(hour === json.hour) {
+                                result[index] = json.sum;
                             }
-                            
-                            // console.log('manArray : ' + manArray);
-                            // console.log('womanArray : ' + womanArray);
-                            
-                            createCharts(chart1ContainerRef, chart2ContainerRef, hours, result, manArray, womanArray);
-                            
-                            const currSum = (currSumData.length == 0 ? 0 : currSumData[0]);
-                            let prevSum = result[result.length - 2];
+                        })
+                    })
         
-                            if(prevSum == undefined) {
-                                prevSum = 0;
-                            }
-                            
-                            let increasePop = 0;
-                            let increasePer = 0;
-                            if(result.length > 1) {
-                                increasePop = (currSum - result[result.length - 2]);
-                                increasePer = ( (currSum - result[result.length - 2]) / result[result.length - 2] * 100 );
-                            }
-                            
-                            document.querySelector('.curr-sum').textContent  = '영역 내 유동인구 수 : ' + numberWithCommas(currSum) + '명';
-                            document.querySelector('.prev-sum').textContent  = '최근 1시간 평균 유동인구 수: ' + numberWithCommas(prevSum) + '명';
-                            document.querySelector('.increase-pop').textContent  = '증감 인구 수: ' + numberWithCommas(increasePop) + '명';
-                            document.querySelector('.increase-percent').textContent  = '최근 1시간 평균 유동인구 대비: ' + (isNaN(increasePer) ? 'NA' : (increasePer.toFixed(2) + '%'));
-                            
-                        } else {
-                            chart1.hideLoading();
-                            chart2.hideLoading(); 
+                    for(let i=0; i<result.length; i++) {
+                        if(result[i] === undefined) {
+                            result[i] = 0;
                         }
+                    }                            
 
-                    });
+                    const currentData = window.currStatistics[window.currStatistics.length - 1]; //statistics[statistics.length - 1];
+                    let manArray = [0,0,0,0,0,0];
+                    let womanArray = [0,0,0,0,0,0];
+                    for (let key in currentData) {
+                        if(key.indexOf('_m_') > -1) {
+                            currentData[key] = parseInt(currentData[key]);
+                            if(key.indexOf('_10') > -1) {
+                                manArray[0] += currentData[key];
+                            } else if(key.indexOf('_20') > -1) {
+                                manArray[1] += currentData[key];
+                            } else if(key.indexOf('_30') > -1) {
+                                manArray[2] += currentData[key];
+                            } else if(key.indexOf('_40') > -1) {
+                                manArray[3] += currentData[key];
+                            } else if(key.indexOf('_50') > -1) {
+                                manArray[4] += currentData[key];
+                            } else if(key.indexOf('_60') > -1) {
+                                manArray[5] += currentData[key];
+                            }
+                        } else {
+                            currentData[key] = parseInt(currentData[key]);
+                            if(key.indexOf('_10') > -1) {
+                                womanArray[0] += currentData[key];
+                            } else if(key.indexOf('_20') > -1) {
+                                womanArray[1] += currentData[key];
+                            } else if(key.indexOf('_30') > -1) {
+                                womanArray[2] += currentData[key];
+                            } else if(key.indexOf('_40') > -1) {
+                                womanArray[3] += currentData[key];
+                            } else if(key.indexOf('_50') > -1) {
+                                womanArray[4] += currentData[key];
+                            } else if(key.indexOf('_60') > -1) {
+                                womanArray[5] += currentData[key];
+                            }
+                        }
+                    }
+                    
+                    // console.log('manArray : ' + manArray);
+                    // console.log('womanArray : ' + womanArray);
+                    
+                    createCharts(chart1ContainerRef, chart2ContainerRef, hours, result, manArray, womanArray);
+                    
+                    const currSum = (currSumData.length == 0 ? 0 : currSumData[0]);
+                    let prevSum = result[result.length - 2];
 
-                // } else {
-                //     chart1.hideLoading();
-                //     chart2.hideLoading();                    
-                // }
-            });
+                    if(prevSum == undefined) {
+                        prevSum = 0;
+                    }
+                    
+                    let increasePop = 0;
+                    let increasePer = 0;
+                    if(result.length > 1) {
+                        increasePop = (currSum - result[result.length - 2]);
+                        increasePer = ( (currSum - result[result.length - 2]) / result[result.length - 2] * 100 );
+                    }
+                    
+                    document.querySelector('.curr-sum').textContent  = '영역 내 유동인구 수 : ' + numberWithCommas(currSum) + '명';
+                    document.querySelector('.prev-sum').textContent  = '최근 1시간 평균 유동인구 수: ' + numberWithCommas(prevSum) + '명';
+                    document.querySelector('.increase-pop').textContent  = '증감 인구 수: ' + numberWithCommas(increasePop) + '명';
+                    document.querySelector('.increase-percent').textContent  = '최근 1시간 평균 유동인구 대비: ' + (isNaN(increasePer) ? 'NA' : (increasePer.toFixed(2) + '%'));
+                    
+                } else {
+                    chart1.hideLoading();
+                    chart2.hideLoading(); 
+                }
+
+            });          
         })     
 }
 
@@ -834,7 +832,7 @@ function updateLayer(currDate, prevDate) {
                 var bbox = ${JSON.stringify([126.76487604016523,37.42806780710028,127.18416090045505,37.70130441174812])};
                 return renderSqlPost(host, port, tile, sql, typeName, aggrType, multiple, null);
             }`,
-        minzoom: 10,
+        minzoom: 0,
         maxzoom: 16.1
     });
     
@@ -845,7 +843,7 @@ function updateLayer(currDate, prevDate) {
         'source': 'vector-tile',
         'source-layer': 'ltdb_fp',
         'maxzoom': 16.1,
-        'minzoom': 10,
+        'minzoom': 0,
         'paint': {
         // Increase the heatmap weight based on frequency and property magnitude
         'heatmap-weight': currWeight,
@@ -935,7 +933,7 @@ function updateLayer(currDate, prevDate) {
                 var bbox = ${JSON.stringify([126.76487604016523,37.42806780710028,127.18416090045505,37.70130441174812])};
                 return renderSqlDiffPost(host, port, tile, sql1, sql2, typeName, aggrType, multiple, null);
             }`,
-        minzoom: 10,
+        minzoom: 0,
         maxzoom: 16.1
     });
     
@@ -946,7 +944,7 @@ function updateLayer(currDate, prevDate) {
         'source': 'vector-tile2',
         'source-layer': 'ltdb_fp',
         'maxzoom': 16.1,
-        'minzoom': 10,
+        'minzoom': 0,
         'paint': {
         // Increase the heatmap weight based on frequency and property magnitude
         'heatmap-weight': prevWeight,

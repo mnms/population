@@ -95,9 +95,13 @@ const MapScript = () => {
             window.afterMap.removeSource('vector-tile2');
             updateAfterMap(max, weight, window.store.getState().dateString, 0.5);
         } else if( e.target.value == '02:00:00') {
-            //updateAfterMap(weight, "event_time = '202103150800'", 0);
+            window.afterMap.removeLayer('vector-tile2');
+            window.afterMap.removeSource('vector-tile2');
+            updateAfterMap(max, weight, window.store.getState().dateString, 0.5);
         } else {
-            //updateAfterMap(weight, "event_time = '202103150700'", 0);
+            window.afterMap.removeLayer('vector-tile2');
+            window.afterMap.removeSource('vector-tile2');
+            updateAfterMap(max, weight, window.store.getState().dateString, 0.5);
         }
 
     };    
@@ -124,7 +128,7 @@ const MapScript = () => {
                     var bbox = ${JSON.stringify(bbox)};
                     return renderSqlDiffPost(host, port, tile, sql1, sql2, typeName, aggrType, multiple, null);
                 }`,
-            minzoom: 10,
+            minzoom: 0,
             maxzoom: 16.1
         });
         
@@ -135,7 +139,7 @@ const MapScript = () => {
             'source': 'vector-tile2',
             'source-layer': 'ltdb_fp',
             'maxzoom': 16.1,
-            'minzoom': 10,
+            'minzoom': 0,
             'paint': {
             // Increase the heatmap weight based on frequency and property magnitude
             'heatmap-weight': weight,
@@ -286,7 +290,7 @@ const MapScript = () => {
                         var bbox = ${JSON.stringify(bbox)};
                         return renderSqlPost(host, port, tile, sql, typeName, aggrType, multiple, null);
                     }`,
-                minzoom: 10,
+                minzoom: 0,
                 maxzoom: 16.1
             });
 
@@ -297,7 +301,7 @@ const MapScript = () => {
                     'source': 'vector-tile',
                     'source-layer': 'ltdb_fp',
                     'maxzoom': 16.1,
-                    'minzoom': 10,
+                    'minzoom': 0,
                     'paint': {
                         // Increase the heatmap weight based on frequency and property magnitude
                         'heatmap-weight': heatmapWeight,
@@ -434,7 +438,7 @@ const MapScript = () => {
                         var bbox = ${JSON.stringify(bbox)};
                         return renderSqlDiffPost(host, port, tile, sql1, sql2, typeName, aggrType, multiple, null);
                     }`,
-                minzoom: 10,
+                minzoom: 0,
                 maxzoom: 16.1
             }); 
             
@@ -445,7 +449,7 @@ const MapScript = () => {
                     'source': 'vector-tile2',
                     'source-layer': 'ltdb_fp',
                     'maxzoom': 16.1,
-                    'minzoom': 10,
+                    'minzoom': 0,
                     'paint': {
                     'heatmap-weight': heatmapWeight,
                     "heatmap-color": [
@@ -619,7 +623,7 @@ const MapScript = () => {
             center: [127, 37.55], //126.986, 37.565
             zoom: 11,
             maxZoom: 16,
-            minZoom: 10,
+            minZoom: 8.5,
             tilesFunctionParams: function (tile) {
                 const port = ports.shift();
                 ports.push(port);
@@ -659,7 +663,7 @@ const MapScript = () => {
             center: [127, 37.55],
             zoom: 11,
             maxZoom: 16,
-            minZoom: 10,
+            minZoom: 8.5,
             tilesFunctionParams: function (tile) {
                 const port = ports.shift();
                 ports.push(port);
@@ -727,6 +731,10 @@ const MapScript = () => {
                 }
             });
 
+            // window.beforeMap.on('wheel', function(e) {
+            //     console.log(e);
+            // });
+
             window.beforeMap.on('move', function(e) {
                 window.beforeMove = false;
                 window.afterMove = false;
@@ -737,6 +745,8 @@ const MapScript = () => {
                 window.afterMove = true;
                 document.querySelector('.mapLoading').style.display = 'block';
                 //console.log('현재 Zoom Level: ' + window.beforeMap.getZoom());
+
+                document.querySelector('.zoom-level-container').textContent = ('Zoom Level : ' + Math.round(window.beforeMap.getZoom() * 100) / 100);
             });
 
             window.beforeMap.resize();
@@ -798,15 +808,11 @@ const MapScript = () => {
             overlay: {
                 center: [window.beforeMap.getCenter().lng, window.beforeMap.getCenter().lat], //126.986, 37.565
                 zoom: window.beforeMap.getZoom(),
-                // maxZoom: 16,
-                // minZoom: 10
+                minZoom: 8.5,
+                maxZoom: 16,
                 // center: [126.986, 37.565],
                 // zoom: 11
             },
-            minZoom: 10,
-            maxZoom: 16,
-            minzoom: 10,
-            maxzoom: 16
         });      
 
         const defaultDraw = new MapboxDraw({
@@ -1087,32 +1093,33 @@ const MapScript = () => {
 
         function draw_circle() {
 
-            if(!window.store.getState().menuSeleted || window.beforeMap.getZoom() < 13) {
-                alert('Draw 기능은 상세정보보기 활성과 지도 13레벨부터 가능 합니다.');
+            if(window.beforeMap.getZoom() < 13) {
+                alert('도형의 크기와 모양 수정은 13레벨부터 가능합니다.');
                 draw.draw.changeMode('simple_select');
                 return;
             }   
 
             defaultDraw.deleteAll();
 
-            let circleRadius = 0.5;
-            if(window.beforeMap.getZoom() > 15) {
-                circleRadius = 0.1;
-            } else if(window.beforeMap.getZoom() > 14) {
-                circleRadius = 0.3;
-            } else if(window.beforeMap.getZoom() > 13) {
-                circleRadius = 0.5;
-            } else if(window.beforeMap.getZoom() > 12) {
-                circleRadius = 1.5;
-            } else if(window.beforeMap.getZoom() > 11) {
-                circleRadius = 2;
-            } else if(window.beforeMap.getZoom() > 10) {
-                circleRadius = 3;
-            } else if(window.beforeMap.getZoom() > 9) {
-                circleRadius = 2;
-            } else {
-                circleRadius = 10;
-            }
+            let circleRadius = 2;//0.5;
+
+            // if(window.beforeMap.getZoom() > 15) {
+            //     circleRadius = 0.1;
+            // } else if(window.beforeMap.getZoom() > 14) {
+            //     circleRadius = 0.3;
+            // } else if(window.beforeMap.getZoom() > 13) {
+            //     circleRadius = 0.5;
+            // } else if(window.beforeMap.getZoom() > 12) {
+            //     circleRadius = 1.5;
+            // } else if(window.beforeMap.getZoom() > 11) {
+            //     circleRadius = 2;
+            // } else if(window.beforeMap.getZoom() > 10) {
+            //     circleRadius = 3;
+            // } else if(window.beforeMap.getZoom() > 9) {
+            //     circleRadius = 2;
+            // } else {
+            //     circleRadius = 10;
+            // }
 
             defaultDraw.changeMode('draw_circle', {initialRadiusInKm: circleRadius})
         }
@@ -1135,8 +1142,8 @@ const MapScript = () => {
             // const data = draw.draw.getAll();
             if (draw.draw.getMode() == 'draw_polygon') {
 
-                if(!window.store.getState().menuSeleted || window.beforeMap.getZoom() < 13) {
-                    alert('Draw 기능은 상세정보보기 활성과 지도 13레벨부터 가능 합니다.');
+                if(window.beforeMap.getZoom() < 13) {
+                    alert('도형의 크기와 모양 수정은 13레벨부터 가능합니다.');
                     draw.draw.changeMode('simple_select');
                     return;
                 }
@@ -1291,7 +1298,8 @@ const MapScript = () => {
         // map.overlay().on('movestart', (e) => {
         //     console.log('movestart ' + e.target.getZoom());
         // })
-
+        
+        
         map.overlay().on('wheel', (e) => {
             
             // console.log(e.target._zooming);
@@ -1312,23 +1320,6 @@ const MapScript = () => {
                     }
                 }
             }
-
-            if( e.target.getZoom() > 16 ) {
-                e.target.setZoom(16);
-                e.preventDefault();
-                // return;
-            }
-
-            if( e.target.getZoom() < 10) {
-                e.target.setZoom(10);
-                e.preventDefault();
-                // e.target.scrollZoom.disable();
-                // return;
-            }
-
-            // if(!e.target.scrollZoom.isEnabled()) {
-            //     e.target.scrollZoom.enable();
-            // }
         });
 
         function debounce(fn, delay) {
@@ -1410,6 +1401,8 @@ const MapScript = () => {
             el_parent.insertBefore(el_circle, el_parent.firstChild);	
         }
 
+        document.querySelector('.mapboxgl-ctrl-group').style.display = 'none';
+
         // clean up on unmount
         return () => {
             map.remove();
@@ -1433,6 +1426,9 @@ const MapScript = () => {
                         <FormControlLabel value="50" control={<Radio />} label="50대" />
                         <FormControlLabel value="60" control={<Radio />} label="60대 이상" />
                     </RadioGroup>                                     
+                </div>
+                <div className='zoom-level-container'>
+                    Zoom Level : 11
                 </div>
                 <div className='fake-container'>
                 </div>

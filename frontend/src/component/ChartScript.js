@@ -31,24 +31,24 @@ const ChartScript = () => {
     // initialize map when component mounts
     useEffect(() => {
 
-        let circleRadius = 0.5;
-        if(window.beforeMap.getZoom() > 15) {
-            circleRadius = 0.1;
-        } else if(window.beforeMap.getZoom() > 14) {
-            circleRadius = 0.3;
-        } else if(window.beforeMap.getZoom() > 13) {
-            circleRadius = 0.5;
-        } else if(window.beforeMap.getZoom() > 12) {
-            circleRadius = 1.5;
-        } else if(window.beforeMap.getZoom() > 11) {
-            circleRadius = 2;
-        } else if(window.beforeMap.getZoom() > 10) {
-            circleRadius = 3;
-        } else if(window.beforeMap.getZoom() > 9) {
-            circleRadius = 2;
-        } else {
-            circleRadius = 10;
-        }
+        let circleRadius = 2;
+        // if(window.beforeMap.getZoom() > 15) {
+        //     circleRadius = 0.1;
+        // } else if(window.beforeMap.getZoom() > 14) {
+        //     circleRadius = 0.3;
+        // } else if(window.beforeMap.getZoom() > 13) {
+        //     circleRadius = 0.5;
+        // } else if(window.beforeMap.getZoom() > 12) {
+        //     circleRadius = 1.5;
+        // } else if(window.beforeMap.getZoom() > 11) {
+        //     circleRadius = 2;
+        // } else if(window.beforeMap.getZoom() > 10) {
+        //     circleRadius = 3;
+        // } else if(window.beforeMap.getZoom() > 9) {
+        //     circleRadius = 2;
+        // } else {
+        //     circleRadius = 10;
+        // }
 
         let initCircle = circle([window.beforeMap.getCenter().lng, window.beforeMap.getCenter().lat], circleRadius, {steps: 64, units: 'kilometers', properties: {center: [window.beforeMap.getCenter().lng, window.beforeMap.getCenter().lat], isCircle: true, radiusInKm: circleRadius}});
 

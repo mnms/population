@@ -45,6 +45,12 @@ function MenuComponent(props) {
     const [dateValue, setDateValue] = React.useState( (window.currentDate === undefined ? window.store.getState().currentDate : window.currentDate) ); //new Date()
 
     const onChange = event => {
+        if(event) {
+            document.querySelector('.mapboxgl-ctrl-group').style.display = 'block';
+        } else {
+            document.querySelector('.mapboxgl-ctrl-group').style.display = 'none';
+        }
+
         setSelected(event);
         props.onChange(event);
         window.store.dispatch(updateStates(event))
@@ -95,7 +101,7 @@ function MenuComponent(props) {
                                                     var multiple = false;
                                                     return renderSqlPost(host, port, tile, sql, typeName, aggrType, multiple, null);
                                                 }`,
-                                            minzoom: 10,
+                                            minzoom: 0,
                                             maxzoom: 16.1
                                         });
                             
@@ -106,7 +112,7 @@ function MenuComponent(props) {
                                                 'source': 'vector-tile',
                                                 'source-layer': 'ltdb_fp',
                                                 'maxzoom': 16.1,
-                                                'minzoom': 10,
+                                                'minzoom': 0,
                                                 'paint': {
                                                     'heatmap-weight': [
                                                         'interpolate',
@@ -196,7 +202,7 @@ function MenuComponent(props) {
                                                     var multiple = false;
                                                     return renderSqlDiffPost(host, port, tile, sql1, sql2, typeName, aggrType, multiple, null);
                                                 }`,
-                                            minzoom: 10,
+                                            minzoom: 0,
                                             maxzoom: 16.1
                                         });   
                                         
@@ -207,7 +213,7 @@ function MenuComponent(props) {
                                                 'source': 'vector-tile2',
                                                 'source-layer': 'ltdb_fp',
                                                 'maxzoom': 16.1,
-                                                'minzoom': 10,
+                                                'minzoom': 0,
                                                 'paint': {
                                                 'heatmap-weight': [
                                                     'interpolate',
