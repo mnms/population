@@ -1094,7 +1094,7 @@ const MapScript = () => {
         function draw_circle() {
 
             if(window.beforeMap.getZoom() < 13) {
-                alert('Draw 기능은 지도 13레벨부터 가능 합니다.');
+                alert('도형의 크기와 모양 수정은 13레벨부터 가능합니다.');
                 draw.draw.changeMode('simple_select');
                 return;
             }   
@@ -1142,8 +1142,8 @@ const MapScript = () => {
             // const data = draw.draw.getAll();
             if (draw.draw.getMode() == 'draw_polygon') {
 
-                if(!window.store.getState().menuSeleted || window.beforeMap.getZoom() < 13) {
-                    alert('Draw 기능은 상세정보보기 활성과 지도 13레벨부터 가능 합니다.');
+                if(window.beforeMap.getZoom() < 13) {
+                    alert('도형의 크기와 모양 수정은 13레벨부터 가능합니다.');
                     draw.draw.changeMode('simple_select');
                     return;
                 }
