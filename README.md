@@ -237,6 +237,7 @@ backend 실행 : spring boot tool 사용
 
 
   * ltdb_fp_history 테이블 : 날짜별 유동인구 히스토리 테이블 (최신날짜 업데이트(캘린더)에  ) 
+  * login 및 새로고침 시 최신날짜는 'select max(event_time) from ltdb_fp_history'로 가져오므로, 데이터 적재 시 ltdb_fp_history 테이블에 데이터를 업데이트(추가)해주어야 한다.
   
   CREATE table ltdb_fp_history (
     event_time string,
