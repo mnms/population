@@ -1,7 +1,6 @@
 # population
 Visualization of the floating population
 
-===
 
 ## 환경설정 (개발 툴 포함)
 ```
@@ -49,7 +48,9 @@ Visualization of the floating population
       
 ```
 
-## 실행 및 빌드
+## 빌드 및 실행
+### 1) npm 사용
+
 
 Frontend 실행 : cd /root/population/frontend
 
@@ -81,7 +82,9 @@ backend 실행 : spring boot tool 사용
   - target 폴더 확인
 ```
 
-## 배포 및 설치
+
+### 2) jar 사용
+
 
 1. jar 배포 및 실행
 
@@ -289,7 +292,6 @@ backend 실행 : spring boot tool 사용
     - name : {값}, pw : {값}
 ```
 
-===
 
 ## 운영 시 필요한 가이드
 
