@@ -771,7 +771,7 @@ export function setCurrPrevDateString(getDate, hour) {
 
     //ex 1시간 전 날짜
     const time = moment.duration(hour);
-    const prevDate = currentDate.subtract(time).format("YYYYMMDDhhmm");
+    const prevDate = currentDate.subtract(time).format("YYYYMMDDHHmm");
 
     return {curr: getDateFormat(date), prev: prevDate};
 }
@@ -790,7 +790,7 @@ export function setMapForDate(getDate, hour) {
 
     //ex 1시간 전 날짜
     const time = moment.duration(hour);
-    const prevDate = currentDate.subtract(time).format("YYYYMMDDhhmm");
+    const prevDate = currentDate.subtract(time).format("YYYYMMDDHHmm");
 
     updateLayer(getDateFormat(date), prevDate);
 }

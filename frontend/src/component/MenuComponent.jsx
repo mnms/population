@@ -78,7 +78,7 @@ function MenuComponent(props) {
                                     const currentDate = dateParse(result[0]['max(event_time)']);
                                     window.currentDate = currentDate;
                                     setDateValue(currentDate);
-    
+                                    
                                     const currPrevDateString = setCurrPrevDateString(currentDate, window.store.getState().prevHour);
                                     window.store.dispatch(updateDateString(currPrevDateString));
                                     window.store.dispatch(updateCurrDate(currentDate));
