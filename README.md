@@ -108,7 +108,7 @@ backend 실행 : spring boot tool 사용
  6.14.4
  $ npm install
  $ npm run build
- $ serve -l 8066 -s build
+ $ nohup serve -l 8066 -s build &
  - http://localhost:8066 URL로 정상 동작 확인
 ```
 
