@@ -344,7 +344,7 @@ backend 실행 : spring boot tool 사용
                     'raster-tiles': {
                         'type': 'raster',
                         'tiles': [
-                            'http://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'
+                            'https://mts0.google.com/vt/src=app&hl=ko&x={x}&y={y}&z={z}&s=.png'
                         ],
                         'tileSize': 256
                     }
