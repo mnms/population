@@ -833,7 +833,7 @@ function updateLayer(currDate, prevDate) {
                 return renderSqlPost(host, port, tile, sql, typeName, aggrType, multiple, null);
             }`,
         minzoom: 0,
-        maxzoom: 16.1
+        maxzoom: 17.1
     });
     
     window.beforeMap.addLayer(
@@ -842,7 +842,7 @@ function updateLayer(currDate, prevDate) {
         'type': 'heatmap',
         'source': 'vector-tile',
         'source-layer': 'ltdb_fp',
-        'maxzoom': 16.1,
+        'maxzoom': 17.1,
         'minzoom': 0,
         'paint': {
         // Increase the heatmap weight based on frequency and property magnitude
@@ -934,7 +934,7 @@ function updateLayer(currDate, prevDate) {
                 return renderSqlDiffPost(host, port, tile, sql1, sql2, typeName, aggrType, multiple, null);
             }`,
         minzoom: 0,
-        maxzoom: 16.1
+        maxzoom: 17.1
     });
     
     window.afterMap.addLayer(
@@ -943,7 +943,7 @@ function updateLayer(currDate, prevDate) {
         'type': 'heatmap',
         'source': 'vector-tile2',
         'source-layer': 'ltdb_fp',
-        'maxzoom': 16.1,
+        'maxzoom': 17.1,
         'minzoom': 0,
         'paint': {
         // Increase the heatmap weight based on frequency and property magnitude

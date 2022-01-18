@@ -129,7 +129,7 @@ const MapScript = () => {
                     return renderSqlDiffPost(host, port, tile, sql1, sql2, typeName, aggrType, multiple, null);
                 }`,
             minzoom: 0,
-            maxzoom: 16.1
+            maxzoom: 17.1
         });
         
         window.afterMap.addLayer(
@@ -138,7 +138,7 @@ const MapScript = () => {
             'type': 'heatmap',
             'source': 'vector-tile2',
             'source-layer': 'ltdb_fp',
-            'maxzoom': 16.1,
+            'maxzoom': 17.1,
             'minzoom': 0,
             'paint': {
             // Increase the heatmap weight based on frequency and property magnitude
@@ -291,7 +291,7 @@ const MapScript = () => {
                         return renderSqlPost(host, port, tile, sql, typeName, aggrType, multiple, null);
                     }`,
                 minzoom: 0,
-                maxzoom: 16.1
+                maxzoom: 17.1
             });
 
             window.beforeMap.addLayer(
@@ -300,7 +300,7 @@ const MapScript = () => {
                     'type': 'heatmap',
                     'source': 'vector-tile',
                     'source-layer': 'ltdb_fp',
-                    'maxzoom': 16.1,
+                    'maxzoom': 17.1,
                     'minzoom': 0,
                     'paint': {
                         // Increase the heatmap weight based on frequency and property magnitude
@@ -439,7 +439,7 @@ const MapScript = () => {
                         return renderSqlDiffPost(host, port, tile, sql1, sql2, typeName, aggrType, multiple, null);
                     }`,
                 minzoom: 0,
-                maxzoom: 16.1
+                maxzoom: 17.1
             }); 
             
             window.afterMap.addLayer(
@@ -448,7 +448,7 @@ const MapScript = () => {
                     'type': 'heatmap',
                     'source': 'vector-tile2',
                     'source-layer': 'ltdb_fp',
-                    'maxzoom': 16.1,
+                    'maxzoom': 17.1,
                     'minzoom': 0,
                     'paint': {
                     'heatmap-weight': heatmapWeight,
@@ -622,7 +622,7 @@ const MapScript = () => {
             },
             center: [127, 37.55], //126.986, 37.565
             zoom: 11,
-            maxZoom: 16,
+            maxZoom: 17,
             minZoom: 8.5,
             tilesFunctionParams: function (tile) {
                 const port = ports.shift();
@@ -662,7 +662,7 @@ const MapScript = () => {
             },
             center: [127, 37.55],
             zoom: 11,
-            maxZoom: 16,
+            maxZoom: 17,
             minZoom: 8.5,
             tilesFunctionParams: function (tile) {
                 const port = ports.shift();
@@ -809,7 +809,7 @@ const MapScript = () => {
                 center: [window.beforeMap.getCenter().lng, window.beforeMap.getCenter().lat], //126.986, 37.565
                 zoom: window.beforeMap.getZoom(),
                 minZoom: 8.5,
-                maxZoom: 16,
+                maxZoom: 17,
                 // center: [126.986, 37.565],
                 // zoom: 11
             },

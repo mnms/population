@@ -102,7 +102,7 @@ function MenuComponent(props) {
                                                     return renderSqlPost(host, port, tile, sql, typeName, aggrType, multiple, null);
                                                 }`,
                                             minzoom: 0,
-                                            maxzoom: 16.1
+                                            maxzoom: 17.1
                                         });
                             
                                         window.beforeMap.addLayer(
@@ -111,7 +111,7 @@ function MenuComponent(props) {
                                                 'type': 'heatmap',
                                                 'source': 'vector-tile',
                                                 'source-layer': 'ltdb_fp',
-                                                'maxzoom': 16.1,
+                                                'maxzoom': 17.1,
                                                 'minzoom': 0,
                                                 'paint': {
                                                     'heatmap-weight': [
@@ -203,7 +203,7 @@ function MenuComponent(props) {
                                                     return renderSqlDiffPost(host, port, tile, sql1, sql2, typeName, aggrType, multiple, null);
                                                 }`,
                                             minzoom: 0,
-                                            maxzoom: 16.1
+                                            maxzoom: 17.1
                                         });   
                                         
                                         window.afterMap.addLayer(
@@ -212,7 +212,7 @@ function MenuComponent(props) {
                                                 'type': 'heatmap',
                                                 'source': 'vector-tile2',
                                                 'source-layer': 'ltdb_fp',
-                                                'maxzoom': 16.1,
+                                                'maxzoom': 17.1,
                                                 'minzoom': 0,
                                                 'paint': {
                                                 'heatmap-weight': [
