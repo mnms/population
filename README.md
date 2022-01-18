@@ -6,6 +6,8 @@ Visualization of the floating population
 ```
 - java v1.8 
 - node.js v12.16.2
+  - nvm install 12.16.2
+  - npm install -g serve
 - npm v6.14.4
 - VS Code 또는 그외 Frontend 개발 툴
 - Spring Tool Suite 4 
