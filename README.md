@@ -102,6 +102,10 @@ backend 실행 : spring boot tool 사용
 ```
  $ git clone https://github.com/bbbbbra/population.git
  $ cd population/frontend
+ $ nvm use 12.16.2
+ Now using node v12.16.2 (npm v6.14.4)
+ $ npm -v
+ 6.14.4
  $ npm install
  $ npm run build
  $ serve -l 8066 -s build
