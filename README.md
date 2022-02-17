@@ -6,6 +6,7 @@ Visualization of the floating population
 ```
 - java v1.8 
 - node.js v12.16.2
+  - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash  // nvm 설치 
   - nvm install 12.16.2
   - npm install -g serve
 - npm v6.14.4
