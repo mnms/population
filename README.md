@@ -6,6 +6,8 @@ Visualization of the floating population
 ```
 - java v1.8 
 - node.js v12.16.2
+  - nvm install 12.16.2
+  - npm install -g serve
 - npm v6.14.4
 - VS Code 또는 그외 Frontend 개발 툴
 - Spring Tool Suite 4 
@@ -100,9 +102,13 @@ backend 실행 : spring boot tool 사용
 ```
  $ git clone https://github.com/bbbbbra/population.git
  $ cd population/frontend
+ $ nvm use 12.16.2
+ Now using node v12.16.2 (npm v6.14.4)
+ $ npm -v
+ 6.14.4
  $ npm install
  $ npm run build
- $ serve -l 8066 -s build
+ $ nohup serve -l 8066 -s build &
  - http://localhost:8066 URL로 정상 동작 확인
 ```
 
@@ -344,7 +350,7 @@ backend 실행 : spring boot tool 사용
                     'raster-tiles': {
                         'type': 'raster',
                         'tiles': [
-                            'http://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'
+                            'https://mts0.google.com/vt/src=app&hl=ko&x={x}&y={y}&z={z}&s=.png'
                         ],
                         'tileSize': 256
                     }
