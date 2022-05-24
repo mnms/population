@@ -280,16 +280,15 @@ const MapScript = () => {
                 
             }
 
+            var currDate = window.store.getState().dateString.curr;
+            var dt = currDate.substring(0, 8);
+            var hh = currDate.substring(8, 10);
+            var mm = currDate.substring(10, 12);
             window.beforeMap.addSource('vector-tile', {
                 type: 'vector',
                 tilesFunction: `function (tile) {
                         var host = tile.tilesFunctionParams.host;
                         var port = tile.tilesFunctionParams.port;
-
-                        var currDate = window.store.getState().dateString.curr;
-                        var dt = currDate.substring(0, 8);
-                        var hh = currDate.substring(8, 10);
-                        var mm = currDate.substring(10, 12);
 
                         var sql = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE dt = '${dt}' and hh = '${hh}' and mm = '${mm}'";
                         var typeName = "ltdb_fp";
@@ -431,19 +430,18 @@ const MapScript = () => {
                 }
 
             }       
-            
+
+            var curr_dt = getDate.curr.substring(0, 8);
+            var curr_hh = getDate.curr.substring(8, 10);
+            var curr_mm = getDate.curr.substring(10, 12)
+            var prev_dt = getDate.prev.substring(0, 8);
+            var prev_hh = getDate.prev.substring(8, 10);
+            var prev_mm = getDate.prev.substring(10, 12);
             window.afterMap.addSource('vector-tile2', {
                 type: 'vector',
                 tilesFunction: `function (tile) {
                         var host = tile.tilesFunctionParams.host;
                         var port = tile.tilesFunctionParams.port;
-
-                        var curr_dt = getDate.curr.substring(0, 8);
-                        var curr_hh = getDate.curr.substring(8, 10);
-                        var curr_mm = getDate.curr.substring(10, 12)
-                        var prev_dt = getDate.prev.substring(0, 8);
-                        var prev_hh = getDate.prev.substring(8, 10);
-                        var prev_mm = getDate.prev.substring(10, 12)
 
                         var sql1 = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE dt = '${curr_dt}' and hh = '${curr_hh}' and mm = '${curr_mm}'";
                         var sql2 = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE dt = '${prev_dt}' and hh = '${prev_hh}' and mm = '${prev_mm}'";
