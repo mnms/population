@@ -901,19 +901,19 @@ function updateLayer(currDate, prevDate) {
         }
     ); 
 
+
+    var curr_dt = currDate.substring(0, 8);
+    var curr_hh = currDate.substring(8, 10);
+    var curr_mm = currDate.substring(10, 12);
+    var prev_dt = prevDate.substring(0, 8);
+    var prev_hh = prevDate.substring(8, 10);
+    var prev_mm = prevDate.substring(10, 12);
+
     window.afterMap.addSource('vector-tile2', {
         type: 'vector',
         tilesFunction: `function (tile) {
                 var host = tile.tilesFunctionParams.host;
                 var port = tile.tilesFunctionParams.port;
-
-                var curr_dt = currDate.substring(0, 8);
-                var curr_hh = currDate.substring(8, 10);
-                var curr_mm = currDate.substring(10, 12)
-                var prev_dt = prevDate.substring(0, 8);
-                var prev_hh = prevDate.substring(8, 10);
-                var prev_mm = prevDate.substring(10, 12)
-
                 var sql1 = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE dt = '${curr_dt}' and hh = '${curr_hh}' and mm = '${curr_mm}'";
                 var sql2 = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE dt = '${prev_dt}' and hh = '${prev_hh}' and mm = '${prev_mm}'";
                 var typeName = "ltdb_fp";

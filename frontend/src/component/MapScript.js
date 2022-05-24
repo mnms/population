@@ -431,6 +431,7 @@ const MapScript = () => {
 
             }       
 
+            var getDate = window.store.getState().dateString.curr;
             var curr_dt = getDate.curr.substring(0, 8);
             var curr_hh = getDate.curr.substring(8, 10);
             var curr_mm = getDate.curr.substring(10, 12)
