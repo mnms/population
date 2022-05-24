@@ -194,6 +194,9 @@ export function setChartOnDraw(chart1ContainerRef, chart2ContainerRef, data, eve
         QueryTimeArray.push( ("'" + startMaxHour.subtract(timeUnit).format('YYYYMMDDHHmm') + "'") );
     }
 
+    const dayUnit = moment.duration(24, 'hours');
+    const theDayBefore = startMaxHour.subtract(dayUnit).format('YYYYMMDDHHmm');
+
     let hours = [];
     let standHour = parseInt(eventTime1.substr(eventTime1.length-4, 2));
     for( var i=0 ; i<24; i++ ){
@@ -325,6 +328,7 @@ export function setChartOnDraw(chart1ContainerRef, chart2ContainerRef, data, eve
     var dt = eventTime1.substring(0, 8);
     var hh = eventTime1.substring(8, 10);
     var mm = eventTime1.substring(10, 12);
+    var before_dt = theDayBefore.substring(0, 8);
 
     const currDateQuery = `
     SELECT
@@ -348,7 +352,10 @@ export function setChartOnDraw(chart1ContainerRef, chart2ContainerRef, data, eve
         sum(exist_f_80) + sum(exist_f_90)) as exist_f_60,
         concat(dt, hh) as event_time
     FROM ltdb_fp
-    WHERE ST_CONTAINS(ST_GEOMFROMTEXT('${wkt}'), geometry) AND concat(dt, hh, mm) IN(${QueryTimeArray.toString()})  GROUP BY dt, hh, mm ORDER BY event_time`; //AND event_time >= '${eventTime2}' AND event_time <= '${eventTime1}'
+    WHERE ST_CONTAINS(ST_GEOMFROMTEXT('${wkt}'), geometry) AND
+          mm = '${mm}' AND
+          ((dt = '${dt}' AND hh <= '${hh}') OR (dt = '${before_dt}' AND hh > '${hh}' ))
+    GROUP BY dt, hh ORDER BY event_time`; //AND event_time >= '${eventTime2}' AND event_time <= '${eventTime1}'
 
     // console.log(query);
     new MapdCon()
