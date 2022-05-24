@@ -85,11 +85,7 @@ const MapScript = () => {
         window.store.dispatch(updatePrevHour(e.target.value));
         const weight = window.afterMap.getLayer('vector-tile2').getPaintProperty('heatmap-weight');
         const max = window.afterMap.getLayer('vector-tile2').getPaintProperty('statistics-max');
-        // window.afterMap.removeLayer('vector-tile2');
-        // window.afterMap.removeSource('vector-tile2');
 
-        // event_time >= '202103170955' AND event_time <= '202103171055'
-        // getCurrentDate(parseInt(e.target.value))
         if( e.target.value == '01:00:00') {
             window.afterMap.removeLayer('vector-tile2');
             window.afterMap.removeSource('vector-tile2');
@@ -107,6 +103,13 @@ const MapScript = () => {
     };    
 
     function updateAfterMap(max, weight, getDate, opacity) {
+        var curr_dt = getDate.curr.substring(0, 8);
+        var curr_hh = getDate.curr.substring(8, 10);
+        var curr_mm = getDate.curr.substring(10, 12)
+        var prev_dt = getDate.prev.substring(0, 8);
+        var prev_hh = getDate.prev.substring(8, 10);
+        var prev_mm = getDate.prev.substring(10, 12)
+
         window.afterMove = true;
         document.querySelector('.mapLoading').style.display = 'block';
         
@@ -120,8 +123,8 @@ const MapScript = () => {
                     var host = tile.tilesFunctionParams.host;
                     var port = tile.tilesFunctionParams.port;
 
-                    var sql1 = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE event_time = '${getDate.curr}'";
-                    var sql2 = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE event_time = '${getDate.prev}'";
+                    var sql1 = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE dt = '${curr_dt}' and hh = '${curr_hh}' and mm = '${curr_mm}'";
+                    var sql2 = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE dt = '${prev_dt}' and hh = '${prev_hh}' and mm = '${prev_mm}'";
                     var typeName = "ltdb_fp";
                     var aggrType = "sum";
                     var multiple = false;
@@ -281,9 +284,14 @@ const MapScript = () => {
                 type: 'vector',
                 tilesFunction: `function (tile) {
                         var host = tile.tilesFunctionParams.host;
-                        var port = tile.tilesFunctionParams.port;  
+                        var port = tile.tilesFunctionParams.port;
 
-                        var sql = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE event_time = '${window.store.getState().dateString.curr}'";
+                        var currDate = window.store.getState().dateString.curr;
+                        var dt = currDate.substring(0, 8);
+                        var hh = currDate.substring(8, 10);
+                        var mm = currDate.substring(10, 12);
+
+                        var sql = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE dt = '${dt}' and hh = '${hh}' and mm = '${mm}'";
                         var typeName = "ltdb_fp";
                         var aggrType = "sum";
                         var multiple = false;
@@ -430,8 +438,15 @@ const MapScript = () => {
                         var host = tile.tilesFunctionParams.host;
                         var port = tile.tilesFunctionParams.port;
 
-                        var sql1 = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE event_time = '${window.store.getState().dateString.curr}'";
-                        var sql2 = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE event_time = '${window.store.getState().dateString.prev}'";
+                        var curr_dt = getDate.curr.substring(0, 8);
+                        var curr_hh = getDate.curr.substring(8, 10);
+                        var curr_mm = getDate.curr.substring(10, 12)
+                        var prev_dt = getDate.prev.substring(0, 8);
+                        var prev_hh = getDate.prev.substring(8, 10);
+                        var prev_mm = getDate.prev.substring(10, 12)
+
+                        var sql1 = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE dt = '${curr_dt}' and hh = '${curr_hh}' and mm = '${curr_mm}'";
+                        var sql2 = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE dt = '${prev_dt}' and hh = '${prev_hh}' and mm = '${prev_mm}'";
                         var typeName = "ltdb_fp";
                         var aggrType = "sum";
                         var multiple = false;

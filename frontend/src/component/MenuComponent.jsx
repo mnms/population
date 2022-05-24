@@ -72,17 +72,21 @@ function MenuComponent(props) {
                             .password(config.password)
                             .connectAsync()
                             .then(function (connector) {
-                                return connector.queryAsync("select max(event_time) from ltdb_fp_history where table_name='ltdb_fp' limit 1", {columnarResults: false});
+                                return connector.queryAsync("select max(dthhmm) from ltdb_fp_history where table_name='mbp_dev.floc_exist_pop_cnt' limit 1", {columnarResults: false});
                             }).then(function (result) {
                                 if(result.length > 0) {
-                                    const currentDate = dateParse(result[0]['max(event_time)']);
+                                    const currentDate = dateParse(result[0]['max(dthhmm)']);
                                     window.currentDate = currentDate;
                                     setDateValue(currentDate);
                                     
                                     const currPrevDateString = setCurrPrevDateString(currentDate, window.store.getState().prevHour);
                                     window.store.dispatch(updateDateString(currPrevDateString));
                                     window.store.dispatch(updateCurrDate(currentDate));
-                                    
+
+                                    var dt = currPrevDateString.curr.substring(0, 8);
+                                    var hh = currPrevDateString.curr.substring(8, 10);
+                                    var mm = currPrevDateString.curr.substring(10, 12);
+
                                     if(window.beforeMap.getLayer('vector-tile') != undefined) {
                                         return;
                                     } else {
@@ -95,7 +99,7 @@ function MenuComponent(props) {
                                                     var host = tile.tilesFunctionParams.host;
                                                     var port = tile.tilesFunctionParams.port;  
                             
-                                                    var sql = "SELECT (exist_m_00 + exist_m_10 + exist_m_20 + exist_m_30 + exist_m_40 + exist_m_50 + exist_m_60 + exist_m_70 + exist_m_80 + exist_m_90 + exist_f_00 + exist_f_10 + exist_f_20 + exist_f_30 + exist_f_40 + exist_f_50 + exist_f_60 + exist_f_70 + exist_f_80 + exist_f_90) as exist, geometry FROM ltdb_fp WHERE event_time = '${currPrevDateString.curr}'";
+                                                    var sql = "SELECT (exist_m_00 + exist_m_10 + exist_m_20 + exist_m_30 + exist_m_40 + exist_m_50 + exist_m_60 + exist_m_70 + exist_m_80 + exist_m_90 + exist_f_00 + exist_f_10 + exist_f_20 + exist_f_30 + exist_f_40 + exist_f_50 + exist_f_60 + exist_f_70 + exist_f_80 + exist_f_90) as exist, geometry FROM ltdb_fp WHERE dt = '${dt}' and hh = '${hh}' and mm = '${mm}'";
                                                     var typeName = "ltdb_fp";
                                                     var aggrType = "sum";
                                                     var multiple = false;
@@ -195,8 +199,8 @@ function MenuComponent(props) {
                                                     var host = tile.tilesFunctionParams.host;
                                                     var port = tile.tilesFunctionParams.port;
                             
-                                                    var sql1 = "SELECT (exist_m_00 + exist_m_10 + exist_m_20 + exist_m_30 + exist_m_40 + exist_m_50 + exist_m_60 + exist_m_70 + exist_m_80 + exist_m_90 + exist_f_00 + exist_f_10 + exist_f_20 + exist_f_30 + exist_f_40 + exist_f_50 + exist_f_60 + exist_f_70 + exist_f_80 + exist_f_90) as exist, geometry FROM ltdb_fp WHERE event_time = '${currPrevDateString.curr}'";
-                                                    var sql2 = "SELECT (exist_m_00 + exist_m_10 + exist_m_20 + exist_m_30 + exist_m_40 + exist_m_50 + exist_m_60 + exist_m_70 + exist_m_80 + exist_m_90 + exist_f_00 + exist_f_10 + exist_f_20 + exist_f_30 + exist_f_40 + exist_f_50 + exist_f_60 + exist_f_70 + exist_f_80 + exist_f_90) as exist, geometry FROM ltdb_fp WHERE event_time = '${currPrevDateString.prev}'";
+                                                    var sql1 = "SELECT (exist_m_00 + exist_m_10 + exist_m_20 + exist_m_30 + exist_m_40 + exist_m_50 + exist_m_60 + exist_m_70 + exist_m_80 + exist_m_90 + exist_f_00 + exist_f_10 + exist_f_20 + exist_f_30 + exist_f_40 + exist_f_50 + exist_f_60 + exist_f_70 + exist_f_80 + exist_f_90) as exist, geometry FROM ltdb_fp WHERE dt = '${dt}' and hh = '${hh}' and mm = '${mm}'";
+                                                    var sql2 = "SELECT (exist_m_00 + exist_m_10 + exist_m_20 + exist_m_30 + exist_m_40 + exist_m_50 + exist_m_60 + exist_m_70 + exist_m_80 + exist_m_90 + exist_f_00 + exist_f_10 + exist_f_20 + exist_f_30 + exist_f_40 + exist_f_50 + exist_f_60 + exist_f_70 + exist_f_80 + exist_f_90) as exist, geometry FROM ltdb_fp WHERE dt = '${dt}' and hh = '${hh}' and mm = '${mm}'";
                                                     var typeName = "ltdb_fp";
                                                     var aggrType = "sum";
                                                     var multiple = false;

@@ -26,9 +26,6 @@ export function setChartOnDraw(chart1ContainerRef, chart2ContainerRef, data, eve
             const currStatistics = window.currStatistics;
             const statistics = window.statistics;
             const eventTime1 = window.store.getState().dateString.curr;
-            // const hours = statistics.map(function (s) {
-            //     return s.event_time.toString().substr(s.event_time.toString().length - 2, s.event_time.toString().length);
-            // })
 
             let hours = [];
             let standHour = parseInt(eventTime1.substr(eventTime1.length-4, 2));
@@ -325,6 +322,10 @@ export function setChartOnDraw(chart1ContainerRef, chart2ContainerRef, data, eve
     document.querySelector('.increase-pop').textContent  = '증감 인구 수:  0명';
     document.querySelector('.increase-percent').textContent  = '최근 1시간 평균 유동인구 대비: NA';
 
+    var dt = eventTime1.substring(0, 8);
+    var hh = eventTime1.substring(8, 10);
+    var mm = eventTime1.substring(10, 12);
+
     const currDateQuery = `
     SELECT
         (sum(exist_m_00) + sum(exist_m_10)) as exist_m_10, sum(exist_m_20) as exist_m_20, sum(exist_m_30) as exist_m_30,
@@ -332,9 +333,9 @@ export function setChartOnDraw(chart1ContainerRef, chart2ContainerRef, data, eve
         sum(exist_m_80) + sum(exist_m_90)) as exist_m_60,
         (sum(exist_f_00) + sum(exist_f_10)) as exist_f_10, sum(exist_f_20) as exist_f_20, sum(exist_f_30) as exist_f_30,
         sum(exist_f_40) as exist_f_40, sum(exist_f_50) as exist_f_50, (sum(exist_f_60) + sum(exist_f_70) +
-        sum(exist_f_80) + sum(exist_f_90)) as exist_f_60, event_time        
+        sum(exist_f_80) + sum(exist_f_90)) as exist_f_60, '${eventTime1}' as event_time
     FROM ltdb_fp    
-    WHERE ST_CONTAINS(ST_GEOMFROMTEXT('${wkt}'), geometry) AND event_time = '${eventTime1}'
+    WHERE ST_CONTAINS(ST_GEOMFROMTEXT('${wkt}'), geometry) AND  dt = '${dt}' AND hh = '${hh}' AND mm = '${mm}'
     GROUP BY event_time ORDER BY event_time`;
 
     const query = `
@@ -345,24 +346,9 @@ export function setChartOnDraw(chart1ContainerRef, chart2ContainerRef, data, eve
         (sum(exist_f_00) + sum(exist_f_10)) as exist_f_10, sum(exist_f_20) as exist_f_20, sum(exist_f_30) as exist_f_30,
         sum(exist_f_40) as exist_f_40, sum(exist_f_50) as exist_f_50, (sum(exist_f_60) + sum(exist_f_70) +
         sum(exist_f_80) + sum(exist_f_90)) as exist_f_60,
-        substring(event_time, 0, ${eventTimeFormat.length - 2}) as event_time
+        concat(dt, hh) as event_time
     FROM ltdb_fp
-    WHERE ST_CONTAINS(ST_GEOMFROMTEXT('${wkt}'), geometry) AND event_time IN(${QueryTimeArray.toString()})  GROUP BY event_time ORDER BY event_time`; //AND event_time >= '${eventTime2}' AND event_time <= '${eventTime1}'                 
-
-    // const query = `
-    // WITH statistics AS (${subQuery}) 
-    // SELECT avg(exist_m_10) as exist_m_10, avg(exist_m_20) as exist_m_20,
-    //     avg(exist_m_30) as exist_m_30, avg(exist_m_40) as exist_m_40, avg(exist_m_50) as exist_m_50, avg(exist_m_60) as exist_m_60,
-    //     avg(exist_f_10) as exist_f_10, avg(exist_f_20) as exist_f_20, avg(exist_f_30) as exist_f_30, avg(exist_f_40) as exist_f_40, 
-    //     avg(exist_f_50) as exist_f_50, avg(exist_f_60) as exist_f_60, event_time
-    // FROM statistics GROUP BY event_time ORDER BY event_time`;
-
-    // const query = `
-    // SELECT sum(exist_m_10) as exist_m_10, sum(exist_m_20) as exist_m_20,
-    //     sum(exist_m_30) as exist_m_30, sum(exist_m_40) as exist_m_40, sum(exist_m_50) as exist_m_50, sum(exist_m_60) as exist_m_60,
-    //     sum(exist_f_10) as exist_f_10, sum(exist_f_20) as exist_f_20, sum(exist_f_30) as exist_f_30, sum(exist_f_40) as exist_f_40, 
-    //     sum(exist_f_50) as exist_f_50, sum(exist_f_60) as exist_f_60, event_time
-    // FROM (${subQuery}) GROUP BY event_time ORDER BY event_time`;
+    WHERE ST_CONTAINS(ST_GEOMFROMTEXT('${wkt}'), geometry) AND concat(dt, hh, mm) IN(${QueryTimeArray.toString()})  GROUP BY event_time ORDER BY event_time`; //AND event_time >= '${eventTime2}' AND event_time <= '${eventTime1}'
 
     // console.log(query);
     new MapdCon()
@@ -377,9 +363,6 @@ export function setChartOnDraw(chart1ContainerRef, chart2ContainerRef, data, eve
             let currSumData = [];
 
             connector.queryAsync(currDateQuery).then(function (statistics) {
-                // if( statistics.length > 0 ) {
-
-                    //if(eventTime1 === statistics[statistics.length - 1].event_time) {
 
                 window.currStatistics = statistics;
 
@@ -403,10 +386,6 @@ export function setChartOnDraw(chart1ContainerRef, chart2ContainerRef, data, eve
             connector.queryAsync(query).then(function (statistics2) {
                 // console.log(statistics2);
                 window.statistics = statistics2;
-
-                // const hours = statistics2.map(function (s) {
-                //     return s.event_time.toString().substr(s.event_time.toString().length - 2, s.event_time.toString().length);
-                // })
 
                 if(statistics2.length > 0) {
 
@@ -796,6 +775,9 @@ export function setMapForDate(getDate, hour) {
 }
 
 function updateLayer(currDate, prevDate) {
+    var dt = currDate.substring(0, 8);
+    var hh = currDate.substring(8, 10);
+    var mm = currDate.substring(10, 12);
     let currWeight = window.beforeMap.getLayer('vector-tile').getPaintProperty('heatmap-weight');
     currWeight[currWeight.length - 2] = 10000000;
     currWeight[currWeight.length - 4] = 5000000;
@@ -825,7 +807,7 @@ function updateLayer(currDate, prevDate) {
                 var host = tile.tilesFunctionParams.host;
                 var port = tile.tilesFunctionParams.port; 
 
-                var sql = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE event_time = '${currDate}'";
+                var sql = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE dt = '${dt}' and hh = '${hh}' and mm = '${mm}'";
                 var typeName = "ltdb_fp";
                 var aggrType = "sum";
                 var multiple = false;
@@ -925,8 +907,15 @@ function updateLayer(currDate, prevDate) {
                 var host = tile.tilesFunctionParams.host;
                 var port = tile.tilesFunctionParams.port;
 
-                var sql1 = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE event_time = '${currDate}'";
-                var sql2 = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE event_time = '${prevDate}'";
+                var curr_dt = currDate.substring(0, 8);
+                var curr_hh = currDate.substring(8, 10);
+                var curr_mm = currDate.substring(10, 12)
+                var prev_dt = prevDate.substring(0, 8);
+                var prev_hh = prevDate.substring(8, 10);
+                var prev_mm = prevDate.substring(10, 12)
+
+                var sql1 = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE dt = '${curr_dt}' and hh = '${curr_hh}' and mm = '${curr_mm}'";
+                var sql2 = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE dt = '${prev_dt}' and hh = '${prev_hh}' and mm = '${prev_mm}'";
                 var typeName = "ltdb_fp";
                 var aggrType = "sum";
                 var multiple = false;
