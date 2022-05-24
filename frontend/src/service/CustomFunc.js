@@ -348,7 +348,7 @@ export function setChartOnDraw(chart1ContainerRef, chart2ContainerRef, data, eve
         sum(exist_f_80) + sum(exist_f_90)) as exist_f_60,
         concat(dt, hh) as event_time
     FROM ltdb_fp
-    WHERE ST_CONTAINS(ST_GEOMFROMTEXT('${wkt}'), geometry) AND concat(dt, hh, mm) IN(${QueryTimeArray.toString()})  GROUP BY event_time ORDER BY event_time`; //AND event_time >= '${eventTime2}' AND event_time <= '${eventTime1}'
+    WHERE ST_CONTAINS(ST_GEOMFROMTEXT('${wkt}'), geometry) AND concat(dt, hh, mm) IN(${QueryTimeArray.toString()})  GROUP BY dt, hh, mm ORDER BY event_time`; //AND event_time >= '${eventTime2}' AND event_time <= '${eventTime1}'
 
     // console.log(query);
     new MapdCon()
