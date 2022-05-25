@@ -621,7 +621,8 @@ const MapScript = () => {
                     'raster-tiles': {
                         'type': 'raster',
                         'tiles': [
-                            'https://mts0.google.com/vt/src=app&hl=ko&x={x}&y={y}&z={z}&s=.png'
+                            //'https://mts0.google.com/vt/src=app&hl=ko&x={x}&y={y}&z={z}&s=.png'
+                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
                         ],
                         'tileSize': 256
                     }
@@ -661,7 +662,8 @@ const MapScript = () => {
                     'raster-tiles': {
                         'type': 'raster',
                         'tiles': [
-                            'https://mts0.google.com/vt/src=app&hl=ko&x={x}&y={y}&z={z}&s=.png'
+                            //'https://mts0.google.com/vt/src=app&hl=ko&x={x}&y={y}&z={z}&s=.png'
+                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
                         ],
                         'tileSize': 256
                     }
