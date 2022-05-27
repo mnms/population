@@ -29,7 +29,7 @@ const config = require ("../server.json");
 
 // const weightValue = 1000;
 // const currentDate = '202103151000';
-const ports = [4762, 4763, 4764, 4765, 4766, 4767, 4768, 4769, 4770, 4771, 4772, 4773];
+const ports = [80];
 const bbox = [126.76487604016523,37.42806780710028,127.18416090045505,37.70130441174812]; // seoul
 const eventTimeFormat = "YYYYMMDDHHmm";
 

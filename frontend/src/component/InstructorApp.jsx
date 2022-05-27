@@ -23,10 +23,10 @@ function InstructorApp() {
                 <>
                     <MenuComponent menuSelected={selected} onChange={setSelected}/>
                     <Switch>
-                        <Route path="/" exact component={LoginComponent} />
-                        <Route path="/login" exact component={LoginComponent} />
-                        <AuthenticatedRoute path="/logout" exact component={LogoutComponent} />
-                        <AuthenticatedRoute path="/main" exact component={MainComponent} />
+                        <Route path="/ltdb/web/" exact component={LoginComponent} />
+                        <Route path="/ltdb/web/login" exact component={LoginComponent} />
+                        <AuthenticatedRoute path="/ltdb/web/logout" exact component={LogoutComponent} />
+                        <AuthenticatedRoute path="/ltdb/web/main" exact component={MainComponent} />
                     </Switch>
                 </>
             </Router>

@@ -12,7 +12,7 @@ function AuthenticatedRoute(props) {
     if (AuthenticationService.isUserLoggedIn()) {
         return <Route {...props} />
     } else {
-        return <Redirect to="/login" />
+        return <Redirect to="/ltdb/web/login" />
     }
 }
 export default AuthenticatedRoute

@@ -52,28 +52,9 @@ export default function LoginComponent(props) {
       }));    
 
     const loginClicked = () => {
-        AuthenticationService.executeBasicAuthenticationService(state.username, state.password)
-            .then((response) => {
-                if( response.data != '' ) {
-                    AuthenticationService.registerSuccessfulLogin(state.username, state.password);
-
-                    props.history.push('/main');
-
-                } else {
-                    alert('다시 입력해주세요.');
-                }
-            }).catch(e => {
-                console.log(e);
-                setState(
-                    {
-                        ...state,
-                        showSuccessMessage: false,
-                        hasLoginFailed: true
-                    }
-                );
-            });
+        AuthenticationService.registerSuccessfulLogin(state.username, state.password);
+        props.history.push('/ltdb/web/main');
     };
-
     const classes = useStyles();
 
     // return (
