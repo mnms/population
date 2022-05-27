@@ -706,7 +706,7 @@ const MapScript = () => {
 
             window.beforeMap.style.dispatcher.broadcast('loadWorkerSource', {
                 name: "pako",
-                url: `http://${window.location.host}/static/js/pako.js` //`http://${window.location.host}/api/pako` //"http://fbg01:8077/js/pako.js"//`http:localhost:${config.appPort}/static/pako.js` //`${axios.get('/api/pako')}`
+                url: `http://${window.location.host}/ltdb/web/static/js/pako.js` //`http://giraf.sktelecom.comhttp://${window.location.host}/ltdb/web/api/pako` //"http://fbg01:8077/js/pako.js"//`http:localhost:${config.appPort}/static/pako.js` //`${axios.get('/api/pako')}`
             }, function (e) {
                 if (e) {
                     console.log(e);
@@ -715,7 +715,7 @@ const MapScript = () => {
 
             window.beforeMap.style.dispatcher.broadcast('loadWorkerSource', {
                 name: "global-mercator",
-                url: `http://${window.location.host}/static/js/global-mercator.js`
+                url: `http://${window.location.host}/ltdb/web/static/js/global-mercator.js`
             }, function (e) {
                 if (e) {
                     console.log(e);
@@ -733,7 +733,7 @@ const MapScript = () => {
 
             window.beforeMap.style.dispatcher.broadcast('loadWorkerSource', {
                 name: "vectortile-utils",
-                url: `http://${window.location.host}/static/js/vectortile-utils.js` //`${axios.get('/api/vectorUtils')}`
+                url: `http://${window.location.host}/ltdb/web/static/js/vectortile-utils.js` //`${axios.get('/api/vectorUtils')}`
             }, function (e) {
                 if (e) {
                     console.log(e);
@@ -771,7 +771,7 @@ const MapScript = () => {
         window.afterMap.on('load', function() {
             window.afterMap.style.dispatcher.broadcast('loadWorkerSource', {
                 name: "pako",
-                url: `http://${window.location.host}/static/js/pako.js` //`${axios.get('/api/pako')}`
+                url: `http://${window.location.host}/ltdb/web/static/js/pako.js` //`${axios.get('/api/pako')}`
             }, function (e) {
                 if (e) {
                     console.log(e);
@@ -780,7 +780,7 @@ const MapScript = () => {
 
             window.afterMap.style.dispatcher.broadcast('loadWorkerSource', {
                 name: "global-mercator",
-                url: `http://${window.location.host}/static/js/global-mercator.js` //`${axios.get('/api/mercator')}`
+                url: `http://${window.location.host}/ltdb/web/static/js/global-mercator.js` //`${axios.get('/api/mercator')}`
             }, function (e) {
                 if (e) {
                     console.log(e);
@@ -798,7 +798,7 @@ const MapScript = () => {
 
             window.afterMap.style.dispatcher.broadcast('loadWorkerSource', {
                 name: "vectortile-utils",
-                url: `http://${window.location.host}/static/js/vectortile-utils.js` //`${axios.get('/api/vectorUtils')}`
+                url: `http://${window.location.host}/ltdb/web/static/js/vectortile-utils.js` //`${axios.get('/api/vectorUtils')}`
             }, function (e) {
                 if (e) {
                     console.log(e);
