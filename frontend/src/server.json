@@ -2,7 +2,7 @@
   "user": "ltdb",
   "password": "ltdb",
   "database": "default",
-  "protocol": "http",
+  "protocol": "https",
   "host": "giraf.sktelecom.com/ltdb/api",
-  "port": [80, 80]
+  "port": [443, 443]
 }

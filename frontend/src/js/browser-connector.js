@@ -2037,7 +2037,8 @@
 	      var _this9 = this;
 
 	      return this._host.map(function (host, i) {
-	        return _this9._protocol[i] + "://" + host + ":" + _this9._port[i];
+	        //return _this9._protocol[i] + "://" + host + ":" + _this9._port[i];
+	        return _this9._protocol[i] + "://" + host;
 	      });
 	    }
 

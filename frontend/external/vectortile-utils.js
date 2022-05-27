@@ -57,7 +57,7 @@ function renderSqlThrift(host, port, tile, sql, typeName, aggrType, multiple, bb
     }
 
     var mapdCon = new MapdCon();
-    mapdCon._protocol = ['http'];
+    mapdCon._protocol = ['https'];
     mapdCon._sessionId = ['0'];
     return mapdCon
         .host(host)
@@ -108,7 +108,7 @@ function renderSqlDiffThrift(host, port, tile, sql1, sql2, typeName, aggrType, m
     }
 
     var mapdCon = new MapdCon();
-    mapdCon._protocol = ['http'];
+    mapdCon._protocol = ['https'];
     mapdCon._sessionId = ['0'];
     return mapdCon
         .host(host)
@@ -159,8 +159,8 @@ function renderSqlPost(host, port, tile, sql, typeName, aggrType, multiple, bbox
         }
     }
 
-    //var url = "http://" + host + ":" + port + "/query/render_sql";
-    var url = "http://" + "giraf.sktelecom.com/ltdb/api" + "/query/render_sql";
+    //var url = "https://" + host + ":" + port + "/query/render_sql";
+    var url = "https://" + "giraf.sktelecom.com/ltdb/api" + "/query/render_sql";
     var body = JSON.stringify({
         "queries": [sql],
         "typeName": typeName,
@@ -212,8 +212,8 @@ function renderSqlGet(host, port, tile, sql, typeName, aggrType, multiple, bbox,
         }
     }
 
-    //var url = "http://" + host + ":" + port + "/query/render_sql";
-    var url = "http://" + "giraf.sktelecom.com/ltdb/api" + "/query/render_sql";
+    //var url = "https://" + host + ":" + port + "/query/render_sql";
+    var url = "https://" + "giraf.sktelecom.com/ltdb/api" + "/query/render_sql";
     url += "?query=" + encodeURIComponent(sql);
     url += "&typeName=" + typeName;
     url += "&zoom=" + String(zoom);
@@ -262,8 +262,8 @@ function renderSqlDiffPost(host, port, tile, sql1, sql2, typeName, aggrType, mul
         }
     }
 
-    //var url = "http://" + host + ":" + port + "/query/render_sql";
-    var url = "http://" + "giraf.sktelecom.com/ltdb/api" + "/query/render_sql";
+    //var url = "https://" + host + ":" + port + "/query/render_sql";
+    var url = "https://" + "giraf.sktelecom.com/ltdb/api" + "/query/render_sql";
     var body = JSON.stringify({
         "queries": [sql1, sql2],
         "typeName": typeName,
@@ -316,8 +316,8 @@ function renderSqlDiffGet(host, port, tile, sql1, sql2, typeName, aggrType, mult
         }
     }
 
-    //var url = "http://" + host + ":" + port + "/query/render_sql";
-    var url = "http://" + "giraf.sktelecom.com/ltdb/api" + "/query/render_sql";
+    //var url = "https://" + host + ":" + port + "/query/render_sql";
+    var url = "https://" + "giraf.sktelecom.com/ltdb/api" + "/query/render_sql";
     url += "?query1=" + encodeURIComponent(sql1);
     url += "&query2=" + encodeURIComponent(sql2);
     url += "&typeName=" + typeName;
