@@ -21,6 +21,8 @@ import AuthenticationService from '../service/AuthenticationService';
 import { updateCurrDate, updatePrevDate, updateStates, updateDateString } from "../redux/actions"
 import {getDateString, setMapForDate, setCurrPrevDateString, setChartOnDraw, timeStamp} from '../service/CustomFunc.js'
 
+import axios from 'axios'
+
 const MapdCon = require("@mapd/connector/dist/browser-connector");
 const config = require ("../server.json");
 
@@ -58,198 +60,96 @@ function MenuComponent(props) {
 
     if(window.currentDate == undefined) {
         const loop = setInterval(() => {
-            if(window.beforeMap != undefined) {
+	    if(window.beforeMap != undefined) {
                 if(window.beforeMap.loaded()) {
-                    clearInterval(loop);
-                    if(window.beforeMap.getLayer('vector-tile') == undefined) {
-  
-                        new Promise((resolve, reject) => {
-                            new MapdCon()
-                            .host(config.host)
-                            .port(config.port[1])
-                            .dbName(config.database)
-                            .user(config.user)
-                            .password(config.password)
-                            .connectAsync()
-                            .then(function (connector) {
-                                return connector.queryAsync("select max(dthhmm) from ltdb_fp_history where table_name='mbp_dev.floc_exist_pop_cnt' limit 1", {columnarResults: false});
-                            }).then(function (result) {
-                                if(result.length > 0) {
-                                    const currentDate = dateParse(result[0]['max(dthhmm)']);
-                                    window.currentDate = currentDate;
-                                    setDateValue(currentDate);
-                                    
-                                    const currPrevDateString = setCurrPrevDateString(currentDate, window.store.getState().prevHour);
-                                    window.store.dispatch(updateDateString(currPrevDateString));
-                                    window.store.dispatch(updateCurrDate(currentDate));
-
-                                    var dt = currPrevDateString.curr.substring(0, 8);
-                                    var hh = currPrevDateString.curr.substring(8, 10);
-                                    var mm = currPrevDateString.curr.substring(10, 12);
-
-                                    if(window.beforeMap.getLayer('vector-tile') != undefined) {
-                                        return;
-                                    } else {
-                                        document.querySelector('.mapLoading').style.display = 'block';
-                                        window.beforeMove = true;
-                                        
-                                        window.beforeMap.addSource('vector-tile', {
-                                            type: 'vector',
-                                            tilesFunction: `function (tile) {
-                                                    var host = tile.tilesFunctionParams.host;
-                                                    var port = tile.tilesFunctionParams.port;  
+	            clearInterval(loop)
+	    //axios.post( "https://giraf.sktelecom.com/ltdb/api",
+	    //[1,"connect",1,0,{"1":{"str":"ltdb"},"2":{"str":"ltdb"},"3":{"str":"default"}}],
+	            axios.post( "https://giraf.sktelecom.com/ltdb/api/query",
+	            "select max(dthhmm) from ltdb_fp_history where table_name='mbp_dev.floc_exist_pop_cnt' limit 1",
+	            {
+		        headers: {
+		            'Content-Type': 'application/vnd.apache.thrift.json',
+		            'Accept': 'application/vnd.apache.thrift.json'
+		        }
+		    }).then(response => {
+			    return response.data.rowset
+                    }).then( result => {
+                        if(result.length > 0) {
+                            const currentDate = dateParse(result[0]['max(dthhmm)']);
+                            window.currentDate = currentDate;
+                            setDateValue(currentDate);
                             
-                                                    var sql = "SELECT (exist_m_00 + exist_m_10 + exist_m_20 + exist_m_30 + exist_m_40 + exist_m_50 + exist_m_60 + exist_m_70 + exist_m_80 + exist_m_90 + exist_f_00 + exist_f_10 + exist_f_20 + exist_f_30 + exist_f_40 + exist_f_50 + exist_f_60 + exist_f_70 + exist_f_80 + exist_f_90) as exist, geometry FROM ltdb_fp WHERE dt = '${dt}' and hh = '${hh}' and mm = '${mm}'";
-                                                    var typeName = "ltdb_fp";
-                                                    var aggrType = "sum";
-                                                    var multiple = false;
-                                                    return renderSqlPost(host, port, tile, sql, typeName, aggrType, multiple, null);
-                                                }`,
-                                            minzoom: 0,
-                                            maxzoom: 16.1
-                                        });
-                            
-                                        window.beforeMap.addLayer(
-                                            {
-                                                'id': 'vector-tile',
-                                                'type': 'heatmap',
-                                                'source': 'vector-tile',
-                                                'source-layer': 'ltdb_fp',
-                                                'maxzoom': 16.1,
-                                                'minzoom': 0,
-                                                'paint': {
-                                                    'heatmap-weight': [
-                                                        'interpolate',
-                                                        ['linear'],
-                                                        ['get', 'exist'], 
-                                                        0, 0,
-                                                        5000000, 0.5,
-                                                        10000000, 1
-                                                    ],
-                                                    "heatmap-color": [
-                                                        'step', ['heatmap-density'], 'rgba(255,255,255,0)',
-                                                        0.05,
-                                                        'rgb(255, 255, 204)',
-                                                        0.1,
-                                                        'rgb(255, 240, 168)',
-                                                        0.2,
-                                                        'rgb(254, 225, 134)',
-                                                        0.3,
-                                                        'rgb(254, 201, 101)',
-                                                        0.4,
-                                                        'rgb(253, 170, 72)',
-                                                        0.5,
-                                                        'rgb(253, 141, 60)',
-                                                        0.6,
-                                                        'rgb(252, 90, 45)',
-                                                        0.8,
-                                                        'rgb(237, 46, 33)',
-                                                        0.9,
-                                                        'rgb(211, 15, 32)',                
-                                                        1,
-                                                        'rgb(176, 0, 38)'
-                                                    ],
-                                                    'heatmap-radius': [
-                                                        'interpolate',
-                                                        ['linear'],
-                                                        ['zoom'],
-                                                        0, 1,
-                                                        1, 2,
-                                                        2, 2,
-                                                        3, 2,
-                                                        4, 3,
-                                                        5, 3,
-                                                        6, 3,
-                                                        7, 10,
-                                                        8, 10,
-                                                        9, 10,
-                                                        10, 10,
-                                                        11, 10,
-                                                        12, 20,
-                                                        13, 20,
-                                                        14, 40,
-                                                        15, 80,
-                                                        16, 90,
-                                                        17, 40,
-                                                        18, 50,
-                                                        19, 60,
-                                                        20, 70,
-                                                        21, 80,
-                                                        22, 100
-                                                        ],                
-                                                    'heatmap-opacity': 0.5,
-                                                    'statistics-max': [
-                                                        'max',
-                                                        ['get', 'exist'],
-                                                    ]
-                                                }                  
-                                            }
-                                        );                         
-                                    }
+                            const currPrevDateString = setCurrPrevDateString(currentDate, window.store.getState().prevHour);
+                            window.store.dispatch(updateDateString(currPrevDateString));
+                            window.store.dispatch(updateCurrDate(currentDate));
 
-                                    if(window.afterMap.getLayer('vector-tile2') != undefined) {
-                                        return;
-                                    } else {
+                            var dt = currPrevDateString.curr.substring(0, 8);
+                            var hh = currPrevDateString.curr.substring(8, 10);
+                            var mm = currPrevDateString.curr.substring(10, 12);
 
-                                        window.afterMove = true;
+                            if(window.beforeMap.getLayer('vector-tile') != undefined) {
+                                return;
+                            } else {
+                                document.querySelector('.mapLoading').style.display = 'block';
+                                window.beforeMove = true;
+                                
+                                window.beforeMap.addSource('vector-tile', {
+                                    type: 'vector',
+                                    tilesFunction: `function (tile) {
+                                            var host = tile.tilesFunctionParams.host;
+                                            var port = tile.tilesFunctionParams.port;  
 
-                                        window.afterMap.addSource('vector-tile2', {
-                                            type: 'vector',
-                                            tilesFunction: `function (tile) {
-                                                    var host = tile.tilesFunctionParams.host;
-                                                    var port = tile.tilesFunctionParams.port;
-                            
-                                                    var sql1 = "SELECT (exist_m_00 + exist_m_10 + exist_m_20 + exist_m_30 + exist_m_40 + exist_m_50 + exist_m_60 + exist_m_70 + exist_m_80 + exist_m_90 + exist_f_00 + exist_f_10 + exist_f_20 + exist_f_30 + exist_f_40 + exist_f_50 + exist_f_60 + exist_f_70 + exist_f_80 + exist_f_90) as exist, geometry FROM ltdb_fp WHERE dt = '${dt}' and hh = '${hh}' and mm = '${mm}'";
-                                                    var sql2 = "SELECT (exist_m_00 + exist_m_10 + exist_m_20 + exist_m_30 + exist_m_40 + exist_m_50 + exist_m_60 + exist_m_70 + exist_m_80 + exist_m_90 + exist_f_00 + exist_f_10 + exist_f_20 + exist_f_30 + exist_f_40 + exist_f_50 + exist_f_60 + exist_f_70 + exist_f_80 + exist_f_90) as exist, geometry FROM ltdb_fp WHERE dt = '${dt}' and hh = '${hh}' and mm = '${mm}'";
-                                                    var typeName = "ltdb_fp";
-                                                    var aggrType = "sum";
-                                                    var multiple = false;
-                                                    return renderSqlDiffPost(host, port, tile, sql1, sql2, typeName, aggrType, multiple, null);
-                                                }`,
-                                            minzoom: 0,
-                                            maxzoom: 16.1
-                                        });   
-                                        
-                                        window.afterMap.addLayer(
-                                            {
-                                                'id': 'vector-tile2',
-                                                'type': 'heatmap',
-                                                'source': 'vector-tile2',
-                                                'source-layer': 'ltdb_fp',
-                                                'maxzoom': 16.1,
-                                                'minzoom': 0,
-                                                'paint': {
-                                                'heatmap-weight': [
-                                                    'interpolate',
-                                                    ['linear'],
-                                                    ['get', 'sum(exist)'],
-                                                    0, 0,
-                                                    5000000, 0.5,
-                                                    10000000, 1
-                                                ],
-                                                "heatmap-color": [
-                                                    'step', ['heatmap-density'], 'rgba(255,255,255,0)',
-                                                    0.05,
-                                                    'rgb(255, 255, 229)',
-                                                    0.1,
-                                                    'rgb(248, 252, 193)',
-                                                    0.2,
-                                                    'rgb(229, 244, 171)',
-                                                    0.3,
-                                                    'rgb(199, 232, 154)',
-                                                    0.4,
-                                                    'rgb(162, 216, 137)',
-                                                    0.5,
-                                                    'rgb(120, 198, 121)',
-                                                    0.6,
-                                                    'rgb(75, 176, 98)',
-                                                    0.8,
-                                                    'rgb(47, 147, 77)',
-                                                    0.9,
-                                                    'rgb(20, 120, 62)',                
-                                                    1,
-                                                    'rgb(0, 96, 52)'
-                                                ],
+                                            var sql = "SELECT (exist_m_00 + exist_m_10 + exist_m_20 + exist_m_30 + exist_m_40 + exist_m_50 + exist_m_60 + exist_m_70 + exist_m_80 + exist_m_90 + exist_f_00 + exist_f_10 + exist_f_20 + exist_f_30 + exist_f_40 + exist_f_50 + exist_f_60 + exist_f_70 + exist_f_80 + exist_f_90) as exist, geometry FROM ltdb_fp WHERE dt = '${dt}' and hh = '${hh}' and mm = '${mm}'";
+                                            var typeName = "ltdb_fp";
+                                            var aggrType = "sum";
+                                            var multiple = false;
+                                            return renderSqlPost(host, port, tile, sql, typeName, aggrType, multiple, null);
+                                        }`,
+                                    minzoom: 0,
+                                    maxzoom: 16.1
+                                });
+
+                                window.beforeMap.addLayer(
+                                    {
+                                        'id': 'vector-tile',
+                                        'type': 'heatmap',
+                                        'source': 'vector-tile',
+                                        'source-layer': 'ltdb_fp',
+                                        'maxzoom': 16.1,
+                                        'minzoom': 0,
+                                        'paint': {
+                                            'heatmap-weight': [
+                                                'interpolate',
+                                                ['linear'],
+                                                ['get', 'exist'], 
+                                                0, 0,
+                                                5000000, 0.5,
+                                                10000000, 1
+                                            ],
+                                            "heatmap-color": [
+                                                'step', ['heatmap-density'], 'rgba(255,255,255,0)',
+                                                0.05,
+                                                'rgb(255, 255, 204)',
+                                                0.1,
+                                                'rgb(255, 240, 168)',
+                                                0.2,
+                                                'rgb(254, 225, 134)',
+                                                0.3,
+                                                'rgb(254, 201, 101)',
+                                                0.4,
+                                                'rgb(253, 170, 72)',
+                                                0.5,
+                                                'rgb(253, 141, 60)',
+                                                0.6,
+                                                'rgb(252, 90, 45)',
+                                                0.8,
+                                                'rgb(237, 46, 33)',
+                                                0.9,
+                                                'rgb(211, 15, 32)',                
+                                                1,
+                                                'rgb(176, 0, 38)'
+                                            ],
                                             'heatmap-radius': [
                                                 'interpolate',
                                                 ['linear'],
@@ -264,35 +164,132 @@ function MenuComponent(props) {
                                                 7, 10,
                                                 8, 10,
                                                 9, 10,
-                                                10, 11,
-                                                11, 15,
+                                                10, 10,
+                                                11, 10,
                                                 12, 20,
                                                 13, 20,
-                                                14, 50,
-                                                15, 70,
-                                                16, 70,
-                                                17, 80,
-                                                18, 80,
-                                                19, 80,
-                                                20, 80,
-                                                21, 90,
+                                                14, 40,
+                                                15, 80,
+                                                16, 90,
+                                                17, 40,
+                                                18, 50,
+                                                19, 60,
+                                                20, 70,
+                                                21, 80,
                                                 22, 100
-                                                ], 
-                                                'heatmap-opacity': 0.5,
-                                                'statistics-max': [
-                                                    'max',
-                                                    ['get', 'sum(exist)'],                  
-                                                ]                
-                                                }                   
-                                            }
-                                        );                                           
+                                                ],                
+                                            'heatmap-opacity': 0.5,
+                                            'statistics-max': [
+                                                'max',
+                                                ['get', 'exist'],
+                                            ]
+                                        }                  
                                     }
+                                );                         
+                            }
 
-                                    resolve();
-                                }
-                            })
-                        })
-                    }
+                            if(window.afterMap.getLayer('vector-tile2') != undefined) {
+                                return;
+                            } else {
+
+                                window.afterMove = true;
+
+                                window.afterMap.addSource('vector-tile2', {
+                                    type: 'vector',
+                                    tilesFunction: `function (tile) {
+                                            var host = tile.tilesFunctionParams.host;
+                                            var port = tile.tilesFunctionParams.port;
+
+                                            var sql1 = "SELECT (exist_m_00 + exist_m_10 + exist_m_20 + exist_m_30 + exist_m_40 + exist_m_50 + exist_m_60 + exist_m_70 + exist_m_80 + exist_m_90 + exist_f_00 + exist_f_10 + exist_f_20 + exist_f_30 + exist_f_40 + exist_f_50 + exist_f_60 + exist_f_70 + exist_f_80 + exist_f_90) as exist, geometry FROM ltdb_fp WHERE dt = '${dt}' and hh = '${hh}' and mm = '${mm}'";
+                                            var sql2 = "SELECT (exist_m_00 + exist_m_10 + exist_m_20 + exist_m_30 + exist_m_40 + exist_m_50 + exist_m_60 + exist_m_70 + exist_m_80 + exist_m_90 + exist_f_00 + exist_f_10 + exist_f_20 + exist_f_30 + exist_f_40 + exist_f_50 + exist_f_60 + exist_f_70 + exist_f_80 + exist_f_90) as exist, geometry FROM ltdb_fp WHERE dt = '${dt}' and hh = '${hh}' and mm = '${mm}'";
+                                            var typeName = "ltdb_fp";
+                                            var aggrType = "sum";
+                                            var multiple = false;
+                                            return renderSqlDiffPost(host, port, tile, sql1, sql2, typeName, aggrType, multiple, null);
+                                        }`,
+                                    minzoom: 0,
+                                    maxzoom: 16.1
+                                });   
+                                
+                                window.afterMap.addLayer(
+                                    {
+                                        'id': 'vector-tile2',
+                                        'type': 'heatmap',
+                                        'source': 'vector-tile2',
+                                        'source-layer': 'ltdb_fp',
+                                        'maxzoom': 16.1,
+                                        'minzoom': 0,
+                                        'paint': {
+                                        'heatmap-weight': [
+                                            'interpolate',
+                                            ['linear'],
+                                            ['get', 'sum(exist)'],
+                                            0, 0,
+                                            5000000, 0.5,
+                                            10000000, 1
+                                        ],
+                                        "heatmap-color": [
+                                            'step', ['heatmap-density'], 'rgba(255,255,255,0)',
+                                            0.05,
+                                            'rgb(255, 255, 229)',
+                                            0.1,
+                                            'rgb(248, 252, 193)',
+                                            0.2,
+                                            'rgb(229, 244, 171)',
+                                            0.3,
+                                            'rgb(199, 232, 154)',
+                                            0.4,
+                                            'rgb(162, 216, 137)',
+                                            0.5,
+                                            'rgb(120, 198, 121)',
+                                            0.6,
+                                            'rgb(75, 176, 98)',
+                                            0.8,
+                                            'rgb(47, 147, 77)',
+                                            0.9,
+                                            'rgb(20, 120, 62)',                
+                                            1,
+                                            'rgb(0, 96, 52)'
+                                        ],
+                                    'heatmap-radius': [
+                                        'interpolate',
+                                        ['linear'],
+                                        ['zoom'],
+                                        0, 1,
+                                        1, 2,
+                                        2, 2,
+                                        3, 2,
+                                        4, 3,
+                                        5, 3,
+                                        6, 3,
+                                        7, 10,
+                                        8, 10,
+                                        9, 10,
+                                        10, 11,
+                                        11, 15,
+                                        12, 20,
+                                        13, 20,
+                                        14, 50,
+                                        15, 70,
+                                        16, 70,
+                                        17, 80,
+                                        18, 80,
+                                        19, 80,
+                                        20, 80,
+                                        21, 90,
+                                        22, 100
+                                        ], 
+                                        'heatmap-opacity': 0.5,
+                                        'statistics-max': [
+                                            'max',
+                                            ['get', 'sum(exist)'],                  
+                                        ]                
+                                        }                   
+                                    }
+                                );                                           
+                            }
+                        }
+                    })
                 }
             }
         }, 500)
