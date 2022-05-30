@@ -113,6 +113,14 @@ backend 실행 : spring boot tool 사용
  - http://localhost:8066 URL로 정상 동작 확인
 ```
 
+giraf(w/ proxy)의 경우 아래와 같이 수정 후 실행
+```
+vi build/index.html
+
+:%s/"\/static/"\/ltdb\/web\/static/g
+:%s/http:/https:/g
+```
+
 ## HTTP API 서버 설정 확인
 
 * VectorTile 및 Chart 데이터를 가져오기 위한 접속 정보
