@@ -393,7 +393,7 @@ export function setChartOnDraw(chart1ContainerRef, chart2ContainerRef, data, eve
     });
 
     axios.post( "https://giraf.sktelecom.com/ltdb/api/query",
-        currDateQuery,
+        query,
         {
         headers: {
             'Content-Type': 'application/vnd.apache.thrift.json',
