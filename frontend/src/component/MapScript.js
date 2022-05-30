@@ -103,19 +103,19 @@ const MapScript = () => {
     };    
 
     function updateAfterMap(max, weight, getDate, opacity) {
-        var curr_dt = getDate.curr.substring(0, 8);
-        var curr_hh = getDate.curr.substring(8, 10);
-        var curr_mm = getDate.curr.substring(10, 12)
-        var prev_dt = getDate.prev.substring(0, 8);
-        var prev_hh = getDate.prev.substring(8, 10);
-        var prev_mm = getDate.prev.substring(10, 12)
-
         window.afterMove = true;
         document.querySelector('.mapLoading').style.display = 'block';
         
         if(window.selectQuery === undefined) {
             window.selectQuery = '(exist_m_00 + exist_m_10 + exist_m_20 + exist_m_30 + exist_m_40 + exist_m_50 + exist_m_60 + exist_m_70 + exist_m_80 + exist_m_90 + exist_f_00 + exist_f_10 + exist_f_20 + exist_f_30 + exist_f_40 + exist_f_50 + exist_f_60 + exist_f_70 + exist_f_80 + exist_f_90) as exist';
         }
+
+         var curr_dt = getDate.curr.substring(0, 8);
+         var curr_hh = getDate.curr.substring(8, 10);
+         var curr_mm = getDate.curr.substring(10, 12);
+         var prev_dt = getDate.prev.substring(0, 8);
+         var prev_hh = getDate.prev.substring(8, 10);
+         var prev_mm = getDate.prev.substring(10, 12);
 
         window.afterMap.addSource('vector-tile2', {
             type: 'vector',
@@ -290,6 +290,11 @@ const MapScript = () => {
                         var host = tile.tilesFunctionParams.host;
                         var port = tile.tilesFunctionParams.port;
 
+                        var currDate = window.store.getState().dateString.curr;
+                        var dt = currDate.substring(0, 8);
+                        var hh = currDate.substring(8, 10);
+                        var mm = currDate.substring(10, 12);
+
                         var sql = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE dt = '${dt}' and hh = '${hh}' and mm = '${mm}'";
                         var typeName = "ltdb_fp";
                         var aggrType = "sum";
@@ -431,21 +436,15 @@ const MapScript = () => {
 
             }       
 
-            var getDate = window.store.getState().dateString.curr;
-            var curr_dt = getDate.curr.substring(0, 8);
-            var curr_hh = getDate.curr.substring(8, 10);
-            var curr_mm = getDate.curr.substring(10, 12)
-            var prev_dt = getDate.prev.substring(0, 8);
-            var prev_hh = getDate.prev.substring(8, 10);
-            var prev_mm = getDate.prev.substring(10, 12);
             window.afterMap.addSource('vector-tile2', {
                 type: 'vector',
                 tilesFunction: `function (tile) {
                         var host = tile.tilesFunctionParams.host;
                         var port = tile.tilesFunctionParams.port;
 
-                        var sql1 = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE dt = '${curr_dt}' and hh = '${curr_hh}' and mm = '${curr_mm}'";
-                        var sql2 = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE dt = '${prev_dt}' and hh = '${prev_hh}' and mm = '${prev_mm}'";
+                        var sql1 = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE dt = '${window.store.getState().dateString.curr.substring(0, 8)}' and hh = '${window.store.getState().dateString.curr.substring(8, 10)}' and mm = '${window.store.getState().dateString.curr.substring(10, 12)}'";
+                        var sql2 = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE dt = '${window.store.getState().dateString.prev.substring(0, 8)}' and hh = '${window.store.getState().dateString.prev.substring(8, 10)}' and mm = '${window.store.getState().dateString.prev.substring(10, 12)}'";
+
                         var typeName = "ltdb_fp";
                         var aggrType = "sum";
                         var multiple = false;
