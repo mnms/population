@@ -290,12 +290,8 @@ const MapScript = () => {
                         var host = tile.tilesFunctionParams.host;
                         var port = tile.tilesFunctionParams.port;
 
-                        var currDate = window.store.getState().dateString.curr;
-                        var dt = currDate.substring(0, 8);
-                        var hh = currDate.substring(8, 10);
-                        var mm = currDate.substring(10, 12);
+                        var sql = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE dt = '${window.store.getState().dateString.curr.substring(0, 8)}' and hh = '${window.store.getState().dateString.curr.substring(8, 10)}' and mm = '${window.store.getState().dateString.curr.substring(10, 12)}'";
 
-                        var sql = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE dt = '${dt}' and hh = '${hh}' and mm = '${mm}'";
                         var typeName = "ltdb_fp";
                         var aggrType = "sum";
                         var multiple = false;
@@ -444,7 +440,7 @@ const MapScript = () => {
 
                         var sql1 = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE dt = '${window.store.getState().dateString.curr.substring(0, 8)}' and hh = '${window.store.getState().dateString.curr.substring(8, 10)}' and mm = '${window.store.getState().dateString.curr.substring(10, 12)}'";
                         var sql2 = "SELECT ${window.selectQuery}, geometry FROM ltdb_fp WHERE dt = '${window.store.getState().dateString.prev.substring(0, 8)}' and hh = '${window.store.getState().dateString.prev.substring(8, 10)}' and mm = '${window.store.getState().dateString.prev.substring(10, 12)}'";
-
+                        console.log(window.selectQuery);
                         var typeName = "ltdb_fp";
                         var aggrType = "sum";
                         var multiple = false;
