@@ -358,6 +358,7 @@ export function setChartOnDraw(chart1ContainerRef, chart2ContainerRef, data, eve
           ((dt = '${dt}' AND hh <= '${hh}') OR (dt = '${before_dt}' AND hh > '${hh}' ))
     GROUP BY dt, hh ORDER BY event_time`; //AND event_time >= '${eventTime2}' AND event_time <= '${eventTime1}'
 
+    let currSumData = [];
     // console.log(query);
     axios.post( "https://giraf.sktelecom.com/ltdb/api/query",
         currDateQuery,
@@ -368,7 +369,7 @@ export function setChartOnDraw(chart1ContainerRef, chart2ContainerRef, data, eve
         }
     })
     .then(response => {
-        return response.data
+        return response.data.rowset
     })
     .then(function (statistics) {
 
@@ -400,7 +401,7 @@ export function setChartOnDraw(chart1ContainerRef, chart2ContainerRef, data, eve
         }
     })
     .then(response => {
-        return response.data
+        return response.data.rowset
     })
     .then(function (statistics2) {
         // console.log(statistics2);
