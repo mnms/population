@@ -279,11 +279,8 @@ const MapScript = () => {
                 }
                 
             }
+            window.selectQuery = '                                                                                                    ' + window.selectQuery;
 
-            var currDate = window.store.getState().dateString.curr;
-            var dt = currDate.substring(0, 8);
-            var hh = currDate.substring(8, 10);
-            var mm = currDate.substring(10, 12);
             window.beforeMap.addSource('vector-tile', {
                 type: 'vector',
                 tilesFunction: `function (tile) {
@@ -431,7 +428,7 @@ const MapScript = () => {
                 }
 
             }       
-
+            window.selectQuery = '                                                                                                     ' + window.selectQuery;
             window.afterMap.addSource('vector-tile2', {
                 type: 'vector',
                 tilesFunction: `function (tile) {
